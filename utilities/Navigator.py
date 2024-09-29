@@ -27,7 +27,10 @@ load_dotenv() #load the environment variables
 class SiteNavigator(ABC):
     def __init__(self):
         self.driver = webdriver.Chrome()
-        self.cookie_dir = "cookies"
+        self.cookie_dir = os.path.join("cookies", self.cookie_file)
+
+        if not os.path.exists("cookies"):
+            os.makedirs("cookies")
 
 
     #ABSTRACT PROPERTIES
@@ -44,7 +47,7 @@ class SiteNavigator(ABC):
     @property
     @abstractmethod
     def cookie_file(self) -> str:
-        return os.path.join(self.cookie_dir, self.cookie_filename)
+        pass
 
 
     #ABSTRACT METHODS
@@ -56,24 +59,27 @@ class SiteNavigator(ABC):
     #HANDLE COOKIES
     def save_cookies(self):
         cookies = self.driver.get_cookies()
-        with open(self.cookie_file, "wb") as f:
+        with open(self.cookie_dir, "wb") as f:
             pickle.dump(cookies, f)
         print("Cookies saved")
 
     def load_cookies(self):
-        if os.path.exists(self.cookie_file):
-            with open(self.cookie_file, "rb") as f:
+        if os.path.exists(self.cookie_dir):
+            with open(self.cookie_dir, "rb") as f:
                 cookies = pickle.load(f)
             for cookie in cookies:
                 self.driver.add_cookie(cookie)
             print("Cookies loaded")
+
+            self.driver.refresh()
             return True
         return False
 
     def clear_cookies(self):
-        if os.path.exists(self.cookie_file):
-            os.remove(self.cookie_file)
+        if os.path.exists(self.cookie_dir):
+            os.remove(self.cookie_dir)
         self.driver.delete_all_cookies()
+        self.driver.refresh()
         print("Cookies cleared")
 
 
@@ -82,8 +88,9 @@ class SiteNavigator(ABC):
         self.driver.get(self.url)
         
         if with_cookies:
-            self.load_cookies()
-            self.driver.refresh()
+            cookies_loaded = self.load_cookies()
+            if cookies_loaded:
+                print("Cookies loaded")
         else:
             self.clear_cookies()
         
@@ -105,7 +112,7 @@ class SiteNavigator(ABC):
 class TutorCruncher(SiteNavigator):
     #PROPERTIES
     url = "https://secure.tutorcruncher.com/"
-    cookie_file = "tutorcruncher_cookies.pkl"
+    cookie_file = "tutorcruncher_cookies.pk1"
     page_elements = {
         "logged_in_element": "#account-menu-dd",
         "username_field": "#id_username",
@@ -133,7 +140,10 @@ class TutorCruncher(SiteNavigator):
 
     # Login to the site
     def login(self):
-        if (self.is_logged_in()):
+        logged_in = self.is_logged_in()
+        print("logged_in: ", logged_in)
+        
+        if (logged_in):
             print("Already logged in")
             return
         
@@ -225,7 +235,7 @@ class Navigator:
         self._siteNavigator = siteNavigator #set the site navigator
 
     def navigate(self):
-        self._siteNavigator.open(with_cookies=True)
+        self._siteNavigator.open(with_cookies=False)
         self._siteNavigator.login()
         self._siteNavigator.getAgency("Oxbridge Applications")
         self._siteNavigator.getPage("jobs")

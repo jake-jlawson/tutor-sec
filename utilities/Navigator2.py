@@ -1,5 +1,9 @@
+"""
+    NAVIGATOR MODULE
+"""
 # File:            || Navigator2.py ||
 # Description:     || Module for handling the navigation of tutoring sites ||
+
 
 # IMPORTS
 import os, pickle
@@ -22,50 +26,49 @@ load_dotenv() #load the environment variables
 #ABSTRACT CLASS: SiteNavigator
 #Description: Abstract class for a site navigator type
 class SiteNavigator(ABC):
+    @property
+    @abstractmethod
+    def url(self): 
+        """URL of the site to navigate."""
+    
+    @property 
+    @abstractmethod
+    def page_elements(self): 
+        """Important page elements of the site to navigate."""
+
+    @property
+    @abstractmethod
+    def cookie_file(self): #cookie file to load
+        """Cookie file to load."""
+    
+
     def __init__(self):
 
         # Check if the cookie folder exists, if not, create it
         self.cookie_folder = "cookies"
         if not os.path.exists("cookies"):
             os.makedirs("cookies")
-            
-        self.driver = self.load_driver()
-        
 
-    def load_driver(self):
         # set up the chrome driver
-        c_options = Options()
-        c_service = Service(ChromeDriverManager().install())
+        def load_driver():
+            c_options = Options()
+            c_service = Service(ChromeDriverManager().install())
 
-        if (os.getenv("USE_CHROME_PROFILE") == "True"):
-            c_options.add_argument(f"--user-data-dir={os.getenv('CHROME_PROFILE')}")
-            c_options.add_argument("--profile-directory=" + os.getenv("CHROME_PROFILE_DIRECTORY"))
+            if (os.getenv("USE_CHROME_PROFILE") == "True"):
+                c_options.add_argument(f"--user-data-dir={os.getenv('CHROME_PROFILE')}")
+                c_options.add_argument("--profile-directory=" + os.getenv("CHROME_PROFILE_DIRECTORY"))
 
-            c_options.add_argument("--disable-extensions")
-            c_options.add_argument("--disable-gpu")
-            c_options.add_argument("--remote-debugging-port=0")
-            c_options.add_argument("--no-sandbox")
+                c_options.add_argument("--disable-extensions")
+                c_options.add_argument("--disable-gpu")
+                c_options.add_argument("--remote-debugging-port=0")
+                c_options.add_argument("--no-sandbox")
+            
+            return webdriver.Chrome(options=c_options, service=c_service)
+                
+        self.driver = load_driver()
         
-        return webdriver.Chrome(options=c_options, service=c_service)
 
-
-    # PROPERTIES to enforce
-    # - url
-    # - page_elements
-    @property
-    @abstractmethod
-    def url(self): #url of the site to navigate
-        pass
     
-    @property 
-    @abstractmethod
-    def page_elements(self): #important page elements of the site to navigate
-        pass
-
-    @property
-    @abstractmethod
-    def cookie_file(self): #cookie file to load
-        pass
 
 
     # NAVIGATOR METHODS

@@ -1,155 +1,133 @@
 """
-Navigator Module
-
-This module contains the Navigator class, which is used to navigate various tutoring sites.
-
-The Navigator class provides methods for:
-- Opening a browser and navigating to a specified URL.
-- Navigating different tutoring platforms.
+    NAVIGATOR MODULE
 """
+# File:            || Navigator.py ||
+# Description:     || Module for handling the navigation of tutoring sites ||
+
+
+# IMPORTS
+import os, pickle, time
 from abc import ABC, abstractmethod
 from dotenv import load_dotenv
-import os
-import pickle
 
 from selenium import webdriver
+from webdriver_manager.chrome import ChromeDriverManager
 from selenium.webdriver.chrome.service import Service
-from selenium.webdriver.common.by import By
+from selenium.webdriver.chrome.options import Options
 from selenium.common.exceptions import NoSuchElementException, TimeoutException, StaleElementReferenceException
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
+from selenium.webdriver.common.by import By
+
 
 load_dotenv() #load the environment variables
 
 
-
-#SITENAVIGATOR: Abstract Base Class which defines standard site navigation operations
+#ABSTRACT CLASS: SiteNavigator
+#Description: Abstract class for a site navigator type
 class SiteNavigator(ABC):
-    def __init__(self):
-        self.driver = webdriver.Chrome()
-        self.cookie_dir = os.path.join("cookies", self.cookie_file)
+    @property
+    @abstractmethod
+    def url(self): 
+        """URL of the site to navigate."""
+    
+    @property 
+    @abstractmethod
+    def page_elements(self): 
+        """Important page elements of the site to navigate."""
 
+    @property
+    @abstractmethod
+    def cookie_file(self): #cookie file to load
+        """Cookie file to load."""
+    
+
+    def __init__(self):
+
+        # Check if the cookie folder exists, if not, create it
+        self.cookie_folder = "cookies"
         if not os.path.exists("cookies"):
             os.makedirs("cookies")
 
+        # set up the chrome driver
+        def load_driver():
+            c_options = Options()
+            c_service = Service(ChromeDriverManager().install())
 
-    #ABSTRACT PROPERTIES
-    @property
-    @abstractmethod
-    def url(self) -> str:
-        pass
+            if bool(os.getenv("USE_CHROME_PROFILE")):
+                print("Using Chrome profile")
+                c_options.add_argument(f"--user-data-dir={os.getenv('CHROME_PROFILE')}")
+                c_options.add_argument("--profile-directory=" + os.getenv("CHROME_PROFILE_DIRECTORY"))
 
-    @property
-    @abstractmethod
-    def page_elements(self) -> dict:
-        pass
-
-    @property
-    @abstractmethod
-    def cookie_file(self) -> str:
-        pass
-
-
-    #ABSTRACT METHODS
-    @abstractmethod
-    def is_logged_in(self) -> bool:
-        pass
+                c_options.add_argument("--disable-extensions")
+                c_options.add_argument("--disable-gpu")
+                c_options.add_argument("--remote-debugging-port=0")
+                c_options.add_argument("--no-sandbox")
+            
+            return webdriver.Chrome(options=c_options, service=c_service)
+                
+        self.driver = load_driver()
+        
 
 
-    #HANDLE COOKIES
-    def save_cookies(self):
-        cookies = self.driver.get_cookies()
-        with open(self.cookie_dir, "wb") as f:
-            pickle.dump(cookies, f)
-        print("Cookies saved")
-
-    def load_cookies(self):
-        if os.path.exists(self.cookie_dir):
-            with open(self.cookie_dir, "rb") as f:
-                cookies = pickle.load(f)
-            for cookie in cookies:
-                self.driver.add_cookie(cookie)
-            print("Cookies loaded")
-
-            self.driver.refresh()
-            return True
-        return False
-
-    def clear_cookies(self):
-        if os.path.exists(self.cookie_dir):
-            os.remove(self.cookie_dir)
-        self.driver.delete_all_cookies()
-        self.driver.refresh()
-        print("Cookies cleared")
-
-
-    #STANDARD NAVIGATION METHODS
-    def open(self, with_cookies: bool = True):
+    # NAVIGATOR METHODS
+    def open(self): #open the site
         self.driver.get(self.url)
+
+
+    def wait_on(self, condition: str): #wait on something to happen before proceeding
         
-        if with_cookies:
-            cookies_loaded = self.load_cookies()
-            if cookies_loaded:
-                print("Cookies loaded")
-        else:
-            self.clear_cookies()
-        
-        
-    #NAVIGATION UTILITIES
-    def wait_on(self, element: str, multiple: bool = False):
-        
-        if multiple:
-            return WebDriverWait(self.driver, 10).until(
-                EC.presence_of_all_elements_located((By.CSS_SELECTOR, element))
+        wait_time = 10
+
+        if (condition == "page_load"):
+            return WebDriverWait(self.driver, wait_time).until(
+                lambda driver: driver.execute_script("return document.readyState") == "complete"
             )
-        else:
-            return WebDriverWait(self.driver, 10).until(
-                EC.presence_of_element_located((By.CSS_SELECTOR, element))
+        elif (condition[0] == "."): #class element
+            return WebDriverWait(self.driver, wait_time).until(
+                EC.presence_of_all_elements_located((By.CLASS_NAME, condition[1:]))
             )
+        elif (condition[0] == "#"): #id element
+            return WebDriverWait(self.driver, wait_time).until(
+                EC.presence_of_element_located((By.ID, condition[1:]))
+            )
+        else: #no selector
+            raise ValueError(f"Invalid condition: {condition}")
         
-
-#CONCRETE IMPLEMENTATION: TutorCruncher
-class TutorCruncher(SiteNavigator):
-    #PROPERTIES
-    url = "https://secure.tutorcruncher.com/"
-    cookie_file = "tutorcruncher_cookies.pk1"
-    page_elements = {
-        "logged_in_element": "#account-menu-dd",
-        "username_field": "#id_username",
-        "password_field": "#id_password",
-        "login_button": "#email-signin",
-        "agency_dropdown_open": "#branch-choice",
-        "agency_dropdown": "#dropdown-menu",
-        "agency_dropdown_item": ".dropdown-item",
-        "menu_items": ".menu-item"
-    }
+    
+    def wait_then_click(self, element: str): #wait on something to happen then click it
+        element = WebDriverWait(self.driver, 10).until(
+            EC.element_to_be_clickable((By.CSS_SELECTOR, element))
+        )
+        element.click()
 
 
-    # CHECK IF LOGGED IN
-    def is_logged_in(self):
+    # LOGIN METHODS
+    def is_logged_in(self): #check if the user is logged in
         try:
-            # Wait for a short time for an element that's only present when logged in
-            # Adjust the selector based on TutorCruncher's actual logged-in page structure
-            WebDriverWait(self.driver, 5).until(
-                EC.presence_of_element_located((By.CSS_SELECTOR, self.page_elements["logged_in_element"]))
+            WebDriverWait(self.driver, 10).until(
+                lambda driver: driver.execute_script("return document.readyState") == "complete"
             )
+
+            self.driver.find_element(By.CSS_SELECTOR, self.page_elements["logged_in"])
+
             return True
-        except TimeoutException:
-            return False
-
-
-    # Login to the site
-    def login(self):
-        logged_in = self.is_logged_in()
-        print("logged_in: ", logged_in)
         
-        if (logged_in):
+        except NoSuchElementException:
+            return False
+        
+
+    def login(self): #login to the site
+        #assumes that the user is on the login page
+        
+        if (self.is_logged_in()): #return if already logged in
             print("Already logged in")
             return
-        
+
         try:
-            self.wait_on(self.page_elements["username_field"]) #wait on login page load
-            
+            print("Logging in...")
+            self.wait_on(self.page_elements["username_field"])
+
             # get login elements
             username_field = self.driver.find_element(By.CSS_SELECTOR, self.page_elements["username_field"])
             password_field = self.driver.find_element(By.CSS_SELECTOR, self.page_elements["password_field"])
@@ -160,27 +138,43 @@ class TutorCruncher(SiteNavigator):
             password_field.send_keys(os.getenv("TUTORCRUNCHER_PASSWORD"))
 
             login_button.click()
-
-            # Wait for login to complete (adjust the condition as needed)
-            self.wait_on(self.page_elements["logged_in_element"])
-
-            # Save cookies after successful login
-            self.save_cookies()
-
-
-        # handle exceptions
-        except TimeoutException:
-            print("Timeout waiting for login page elements or login to complete")
-        except NoSuchElementException as e:
-            print(f"Element not found: {str(e)}")
+            
         except Exception as e:
-            print(f"An error occurred during login: {str(e)}")
+            print(f"Error logging in: {e}")
+    
+    
 
-        
-    # Get the agency from the dropdown
-    def getAgency(self, agency_name: str):
-        max_attempts = 5 
-        
+#CONCRETE IMPLEMENTATIONS:
+#Description: Concrete implementations of the SiteNavigator abstract class
+class TutorCruncher(SiteNavigator):
+    # PROPERTIES
+    url = "https://secure.tutorcruncher.com/"
+    cookie_file = "tutorcruncher_cookies.pk1"
+
+    page_elements = {
+        "logged_in": "#branch-menu",
+        "username_field": "#id_username",
+        "password_field": "#id_password",
+        "login_button": "#email-signin",
+        "agency_dropdown_open": "#branch-choice",
+        "agency_dropdown": "#dropdown-menu",
+        "agency_dropdown_item": ".dropdown-item",
+        "menu_items": ".menu-item"
+    }
+
+    def __init__(self, company: str):
+        super().__init__()
+        self.company = company
+
+        # Perform initial navigation actions on init
+        self.open()
+        self.login()
+        self.set_company()
+
+
+    def set_company(self):
+        max_attempts = 5
+
         # try to select the agency
         for attempt in range(max_attempts):
             try:
@@ -189,19 +183,20 @@ class TutorCruncher(SiteNavigator):
                 dropdown.click()
 
                 #find the dropdown item
-                dropdown_items = self.wait_on(self.page_elements["agency_dropdown_item"], multiple=True)
+                dropdown_items = self.wait_on(self.page_elements["agency_dropdown_item"])
                 print("dropdown items: ", dropdown_items)
 
-                # check each item in the dropdown
+                # check each item in the dropdown to find the company
                 for item in dropdown_items:
                     item_text = item.text.strip().lower()
                     
-                    if agency_name.strip().lower() in item_text: #if the agency name is in the item text
+                    if self.company.strip().lower() == item_text: #if the agency name is in the item text
                         item.click()
                         return True
                     
                 # If the loop completes without finding a match
-                print(f"No dropdown item found containing '{agency_name}'")
+                print(f"No dropdown item found containing '{self.company}'")
+                dropdown.click()
                 return False
         
 
@@ -213,46 +208,71 @@ class TutorCruncher(SiteNavigator):
                     print("Max retry attempts reached. Unable to select agency.")
                     return False
                 
+    def navigate_to(self, page: str):
+        try:
+            # Wait for the menu items to be present
+            WebDriverWait(self.driver, 10).until(
+                EC.presence_of_element_located((By.CSS_SELECTOR, self.page_elements["menu_items"]))
+            )
+            
+            # Find all menu items
+            items = self.driver.find_elements(By.CSS_SELECTOR, self.page_elements["menu_items"])
+            
+            # Debug: Print all menu items
+            print(f"Available menu items: {[item.text for item in items]}")
+            
+            for item in items:
+                if page.lower() in item.text.strip().lower():
+                    print(f"Found matching menu item: {item.text}")
+                    try:
+                        item.click()
+                        return
+                    except TimeoutException:
+                        print(f"Timeout waiting for {item.text} to be clickable")
+            
+            print(f"Page '{page}' not found")
 
-    # Navigate to different tutor cruncher pages (jobs, applications, etc.)
-    def getPage(self, page: str):
+            self.wait_on("page_load")
         
-        #get navigation
-        navigation = self.wait_on(self.page_elements["menu_items"], multiple=True)
-
-        print("navigation: ", navigation)
-        
-        
-        
+        except Exception as e:
+            print(f"An error occurred while navigating: {str(e)}")
 
 
+class Lanterna(SiteNavigator):
+    # PROPERTIES
+    url = "https://www.lanterna.com/"
+    cookie_file = "lanterna_cookies.pk1"
+    page_elements = {
+        "logged_in": "#account-menu-dd",
+    }
 
 
 
-#NAVIGATOR: Class which uses a sitenavigator to navigate a site
+#CONTEXT: Navigator
+#Description: Class for navigating a site
 class Navigator:
-    def __init__(self, siteNavigator: SiteNavigator) -> None:
-        self._siteNavigator = siteNavigator #set the site navigator
+    def __init__(self, tutoring_company: str) -> None:
+        
+        # set the site navigator based on the input
+        match tutoring_company:
+            case "TutorChase":
+                self._siteNavigator = TutorCruncher(tutoring_company)
+            case "TutorChase China":
+                self._siteNavigator = TutorCruncher(tutoring_company)
+            case "UniAdmissions":
+                self._siteNavigator = TutorCruncher(tutoring_company)
+            case "Oxbridge Applications":
+                self._siteNavigator = TutorCruncher(tutoring_company)
+            case "Lanterna":
+                self._siteNavigator = Lanterna()
+            case _:
+                raise ValueError(f"Invalid site navigator: {tutoring_company}")
+            
+    def run(self):
+        self._siteNavigator.navigate_to("Available Jobs")
 
-    def navigate(self):
-        self._siteNavigator.open(with_cookies=False)
-        self._siteNavigator.login()
-        self._siteNavigator.getAgency("Oxbridge Applications")
-        self._siteNavigator.getPage("jobs")
+        # Keep the browser open for 30 seconds
+        time.sleep(10)
+        
 
-    @property
-    def siteNavigator(self): #getter for the site navigator
-        return self._siteNavigator
-
-    @siteNavigator.setter
-    def siteNavigator(self, siteNavigator: SiteNavigator): #setter for the site navigator
-        self._siteNavigator = siteNavigator
-
-
-
-
-navigator = Navigator(TutorCruncher())
-navigator.navigate()
-
-
-
+        

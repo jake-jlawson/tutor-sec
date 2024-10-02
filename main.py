@@ -3,7 +3,7 @@
 """
 
 #IMPORTS
-from utilities.Navigator2 import Navigator
+from utilities.Navigator import Navigator
 
 
 def main():

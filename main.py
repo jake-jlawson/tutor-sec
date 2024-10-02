@@ -7,7 +7,7 @@ from utilities.Navigator2 import Navigator
 
 
 def main():
-    navigator = Navigator("TutorChase")
+    navigator = Navigator("UniAdmissions")
     navigator.run()
 
 

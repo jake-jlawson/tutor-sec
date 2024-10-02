@@ -6,7 +6,7 @@
 
 
 # IMPORTS
-import os, pickle
+import os, pickle, time
 from abc import ABC, abstractmethod
 from dotenv import load_dotenv
 
@@ -54,7 +54,8 @@ class SiteNavigator(ABC):
             c_options = Options()
             c_service = Service(ChromeDriverManager().install())
 
-            if (os.getenv("USE_CHROME_PROFILE") == "True"):
+            if bool(os.getenv("USE_CHROME_PROFILE")):
+                print("Using Chrome profile")
                 c_options.add_argument(f"--user-data-dir={os.getenv('CHROME_PROFILE')}")
                 c_options.add_argument("--profile-directory=" + os.getenv("CHROME_PROFILE_DIRECTORY"))
 
@@ -68,12 +69,37 @@ class SiteNavigator(ABC):
         self.driver = load_driver()
         
 
-    
-
 
     # NAVIGATOR METHODS
     def open(self): #open the site
         self.driver.get(self.url)
+
+
+    def wait_on(self, condition: str): #wait on something to happen before proceeding
+        
+        wait_time = 10
+
+        if (condition == "page_load"):
+            return WebDriverWait(self.driver, wait_time).until(
+                lambda driver: driver.execute_script("return document.readyState") == "complete"
+            )
+        elif (condition[0] == "."): #class element
+            return WebDriverWait(self.driver, wait_time).until(
+                EC.presence_of_all_elements_located((By.CLASS_NAME, condition[1:]))
+            )
+        elif (condition[0] == "#"): #id element
+            return WebDriverWait(self.driver, wait_time).until(
+                EC.presence_of_element_located((By.ID, condition[1:]))
+            )
+        else: #no selector
+            raise ValueError(f"Invalid condition: {condition}")
+        
+    
+    def wait_then_click(self, element: str): #wait on something to happen then click it
+        element = WebDriverWait(self.driver, 10).until(
+            EC.element_to_be_clickable((By.CSS_SELECTOR, element))
+        )
+        element.click()
 
 
     # LOGIN METHODS
@@ -90,13 +116,31 @@ class SiteNavigator(ABC):
         except NoSuchElementException:
             return False
         
+
     def login(self): #login to the site
+        #assumes that the user is on the login page
         
-        if (self.is_logged_in()):
+        if (self.is_logged_in()): #return if already logged in
             print("Already logged in")
             return
-        
-        print("Logging in...")
+
+        try:
+            print("Logging in...")
+            self.wait_on(self.page_elements["username_field"])
+
+            # get login elements
+            username_field = self.driver.find_element(By.CSS_SELECTOR, self.page_elements["username_field"])
+            password_field = self.driver.find_element(By.CSS_SELECTOR, self.page_elements["password_field"])
+            login_button = self.driver.find_element(By.CSS_SELECTOR, self.page_elements["login_button"])
+
+            #send the username and password to the fields
+            username_field.send_keys(os.getenv("TUTORCRUNCHER_USERNAME"))
+            password_field.send_keys(os.getenv("TUTORCRUNCHER_PASSWORD"))
+
+            login_button.click()
+            
+        except Exception as e:
+            print(f"Error logging in: {e}")
     
     
 
@@ -111,13 +155,94 @@ class TutorCruncher(SiteNavigator):
     # PROPERTIES
     url = "https://secure.tutorcruncher.com/"
     cookie_file = "tutorcruncher_cookies.pk1"
+
     page_elements = {
         "logged_in": "#branch-menu",
+        "username_field": "#id_username",
+        "password_field": "#id_password",
+        "login_button": "#email-signin",
+        "agency_dropdown_open": "#branch-choice",
+        "agency_dropdown": "#dropdown-menu",
+        "agency_dropdown_item": ".dropdown-item",
+        "menu_items": ".menu-item"
     }
 
     def __init__(self, company: str):
         super().__init__()
         self.company = company
+
+        # Perform initial navigation actions on init
+        self.open()
+        self.login()
+        self.set_company()
+
+
+    def set_company(self):
+        max_attempts = 5
+
+        # try to select the agency
+        for attempt in range(max_attempts):
+            try:
+                # get the dropdown element
+                dropdown = self.wait_on(self.page_elements["agency_dropdown_open"]) 
+                dropdown.click()
+
+                #find the dropdown item
+                dropdown_items = self.wait_on(self.page_elements["agency_dropdown_item"])
+                print("dropdown items: ", dropdown_items)
+
+                # check each item in the dropdown to find the company
+                for item in dropdown_items:
+                    item_text = item.text.strip().lower()
+                    
+                    if self.company.strip().lower() == item_text: #if the agency name is in the item text
+                        item.click()
+                        return True
+                    
+                # If the loop completes without finding a match
+                print(f"No dropdown item found containing '{self.company}'")
+                dropdown.click()
+                return False
+        
+
+            # handle exceptions
+            except StaleElementReferenceException:
+                if attempt < max_attempts - 1:
+                    print(f"Stale element encountered. Retrying... (Attempt {attempt + 1})")
+                else:
+                    print("Max retry attempts reached. Unable to select agency.")
+                    return False
+                
+    def navigate_to(self, page: str):
+        try:
+            # Wait for the menu items to be present
+            WebDriverWait(self.driver, 10).until(
+                EC.presence_of_element_located((By.CSS_SELECTOR, self.page_elements["menu_items"]))
+            )
+            
+            # Find all menu items
+            items = self.driver.find_elements(By.CSS_SELECTOR, self.page_elements["menu_items"])
+            
+            # Debug: Print all menu items
+            print(f"Available menu items: {[item.text for item in items]}")
+            
+            for item in items:
+                if page.lower() in item.text.strip().lower():
+                    print(f"Found matching menu item: {item.text}")
+                    try:
+                        item.click()
+                        return
+                    except TimeoutException:
+                        print(f"Timeout waiting for {item.text} to be clickable")
+            
+            print(f"Page '{page}' not found")
+
+            self.wait_on("page_load")
+        
+        except Exception as e:
+            print(f"An error occurred while navigating: {str(e)}")
+
+
 
 
 class Lanterna(SiteNavigator):
@@ -151,9 +276,10 @@ class Navigator:
                 raise ValueError(f"Invalid site navigator: {tutoring_company}")
             
     def run(self):
-        self._siteNavigator.open()
-        print("Logged in? ", self._siteNavigator.is_logged_in())
-        self._siteNavigator.login()
+        self._siteNavigator.navigate_to("Available Jobs")
+
+        # Keep the browser open for 30 seconds
+        time.sleep(10)
         
 
         

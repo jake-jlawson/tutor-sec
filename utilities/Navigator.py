@@ -19,6 +19,10 @@ from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.common.by import By
 
+from bs4 import BeautifulSoup
+
+from tasks.ClientApplications import Job, ApplicationProvider
+
 
 load_dotenv() #load the environment variables
 
@@ -44,6 +48,8 @@ class SiteNavigator(ABC):
 
     def __init__(self):
 
+        self.application_provider = ApplicationProvider()
+        
         # Check if the cookie folder exists, if not, create it
         self.cookie_folder = "cookies"
         if not os.path.exists("cookies"):
@@ -90,6 +96,10 @@ class SiteNavigator(ABC):
         elif (condition[0] == "#"): #id element
             return WebDriverWait(self.driver, wait_time).until(
                 EC.presence_of_element_located((By.ID, condition[1:]))
+            )
+        elif ("http" in condition or "https" in condition): #url
+            return WebDriverWait(self.driver, wait_time).until(
+                EC.url_contains(condition)
             )
         else: #no selector
             raise ValueError(f"Invalid condition: {condition}")
@@ -142,6 +152,14 @@ class SiteNavigator(ABC):
         except Exception as e:
             print(f"Error logging in: {e}")
     
+
+    #UTILITY METHODS
+    def to_class(self, classname: str):
+        #remove the dot if it exists
+        if (classname[0] == "."):
+            classname = classname[1:]
+
+        return classname
     
 
 #CONCRETE IMPLEMENTATIONS:
@@ -159,7 +177,14 @@ class TutorCruncher(SiteNavigator):
         "agency_dropdown_open": "#branch-choice",
         "agency_dropdown": "#dropdown-menu",
         "agency_dropdown_item": ".dropdown-item",
-        "menu_items": ".menu-item"
+        "menu_items": ".menu-item",
+        "next_page_button": ".page-item",
+        "jobs_page": "Available Jobs",
+        "job_element": ".card-custom"
+    }
+
+    page_urls = {
+        "jobs_page": "https://secure.tutorcruncher.com/cal/con/service/"
     }
 
     def __init__(self, company: str):
@@ -237,6 +262,41 @@ class TutorCruncher(SiteNavigator):
         except Exception as e:
             print(f"An error occurred while navigating: {str(e)}")
 
+    def get_available_jobs(self):
+        # Navigate to the available jobs page
+        self.navigate_to("Available Jobs")
+        self.wait_on(self.page_urls["jobs_page"])
+
+        # get the page source
+        page_source = self.driver.page_source
+        soup = BeautifulSoup(page_source, 'html.parser')
+
+        #retrieve jobs via class
+        job_elements= soup.find_all("div",class_=self.to_class(self.page_elements["job_element"]))
+        print("number of jobs: ", len(job_elements))
+
+        for job in job_elements:
+            # #job fields
+            title = job.find("h3", class_="card-title").text
+            pay = job.find("div", class_="tcc-pay-rate").text
+            job_text = job.find_all("div", class_="detail-long-item")[0].text
+            tags = job.find_all("div", class_="detail-long-item")[1].text
+
+            #create the job
+            new_job = Job(title, pay, job_text, tags, job)
+            self.application_provider.add_job(new_job)
+
+            print("job title: ", new_job.title)
+            print("job pay: ", new_job.pay)
+            print("job text: ", new_job.job_text)
+            print("job tags: ", new_job.tags)
+
+
+
+
+
+
+
 
 class Lanterna(SiteNavigator):
     # PROPERTIES
@@ -269,7 +329,7 @@ class Navigator:
                 raise ValueError(f"Invalid site navigator: {tutoring_company}")
             
     def run(self):
-        self._siteNavigator.navigate_to("Available Jobs")
+        self._siteNavigator.get_available_jobs()
 
         # Keep the browser open for 30 seconds
         time.sleep(10)

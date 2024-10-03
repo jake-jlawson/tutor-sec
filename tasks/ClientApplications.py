@@ -14,9 +14,10 @@ from abc import ABC, abstractmethod
 #Description: Class used to store information about a job
 class Job:
     def __init__(self, title: str, pay: str, job_text: str, tags: list[str], element: str):
-        self.title = title
+        self.title = self.clean_input(title)
         self.pay = self.getPay(pay)
-        self.job_text = job_text
+        self.job_text = self.clean_input(job_text)
+        self.tags = tags
         self.element = element
 
 
@@ -36,15 +37,31 @@ class Job:
             return None
         
 
+    def clean_input(self, input: str):
+        #remove outer whitespace and newlines
+        return input.strip()
+        
+
 #CLASS: ApplicationGenerator
 #Description: Class used to generate applications for jobs via LLMs
 class ApplicationGenerator:
-    def __init__(self, job: Job):
-        self.job = job
+    def __init__(self):
+        pass
 
-    def generate(self):
+    def generate(self, job: Job):
         pass
             
+
+#CLASS: ApplicationProvider
+#Description: Class used by navigator classes to apply for jobs
+class ApplicationProvider:
+    def __init__(self):
+        self.generator = ApplicationGenerator()
+        self.jobs = []
+
+    def add_job(self, job: Job):
+        self.jobs.append(job)
+
 
 
 

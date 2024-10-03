@@ -21,7 +21,8 @@ from selenium.webdriver.common.by import By
 
 from bs4 import BeautifulSoup
 
-from tasks.ClientApplications import Job, ApplicationProvider
+from tasks.ClientApplications import ApplicationProvider
+from tasks.JobsManager import Job
 
 
 load_dotenv() #load the environment variables
@@ -44,6 +45,10 @@ class SiteNavigator(ABC):
     @abstractmethod
     def cookie_file(self): #cookie file to load
         """Cookie file to load."""
+
+    @abstractmethod
+    def navigate_to(self, page: str, url: str = None):
+        """Navigate to a specific page."""
     
 
     def __init__(self):
@@ -112,6 +117,10 @@ class SiteNavigator(ABC):
         element.click()
 
 
+    def nav_to(self, url: str): #navigate to a specific url
+        self.driver.get(url)
+
+
     # LOGIN METHODS
     def is_logged_in(self): #check if the user is logged in
         try:
@@ -161,6 +170,7 @@ class SiteNavigator(ABC):
 
         return classname
     
+
 
 #CONCRETE IMPLEMENTATIONS:
 #Description: Concrete implementations of the SiteNavigator abstract class
@@ -233,36 +243,40 @@ class TutorCruncher(SiteNavigator):
                     print("Max retry attempts reached. Unable to select agency.")
                     return False
                 
-    def navigate_to(self, page: str):
-        try:
-            # Wait for the menu items to be present
-            WebDriverWait(self.driver, 10).until(
-                EC.presence_of_element_located((By.CSS_SELECTOR, self.page_elements["menu_items"]))
-            )
-            
-            # Find all menu items
-            items = self.driver.find_elements(By.CSS_SELECTOR, self.page_elements["menu_items"])
-            
-            # Debug: Print all menu items
-            print(f"Available menu items: {[item.text for item in items]}")
-            
-            for item in items:
-                if page.lower() in item.text.strip().lower():
-                    print(f"Found matching menu item: {item.text}")
-                    try:
-                        item.click()
-                        return
-                    except TimeoutException:
-                        print(f"Timeout waiting for {item.text} to be clickable")
-            
-            print(f"Page '{page}' not found")
+    def navigate_to(self, page: str, url: str = None):
+        if url is not None:
+            self.nav_to(url)
+        else:
+            try:
+                # Wait for the menu items to be present
+                WebDriverWait(self.driver, 10).until(
+                    EC.presence_of_element_located((By.CSS_SELECTOR, self.page_elements["menu_items"]))
+                )
+                
+                # Find all menu items
+                items = self.driver.find_elements(By.CSS_SELECTOR, self.page_elements["menu_items"])
+                
+                # Debug: Print all menu items
+                print(f"Available menu items: {[item.text for item in items]}")
+                
+                for item in items:
+                    if page.lower() in item.text.strip().lower():
+                        print(f"Found matching menu item: {item.text}")
+                        try:
+                            item.click()
+                            return
+                        except TimeoutException:
+                            print(f"Timeout waiting for {item.text} to be clickable")
+                
+                print(f"Page '{page}' not found")
 
-            self.wait_on("page_load")
-        
-        except Exception as e:
-            print(f"An error occurred while navigating: {str(e)}")
+                self.wait_on("page_load")
+            
+            except Exception as e:
+                print(f"An error occurred while navigating: {str(e)}")
 
-    def get_available_jobs(self):
+
+    def get_available_jobs(self, url: str = None):
         # Navigate to the available jobs page
         self.navigate_to("Available Jobs")
         self.wait_on(self.page_urls["jobs_page"])
@@ -275,6 +289,7 @@ class TutorCruncher(SiteNavigator):
         job_elements= soup.find_all("div",class_=self.to_class(self.page_elements["job_element"]))
         print("number of jobs: ", len(job_elements))
 
+        #iterate through each job and add them to the application provider
         for job in job_elements:
             # #job fields
             title = job.find("h3", class_="card-title").text
@@ -285,17 +300,9 @@ class TutorCruncher(SiteNavigator):
             #create the job
             new_job = Job(title, pay, job_text, tags, job)
             self.application_provider.add_job(new_job)
+            
 
-            print("job title: ", new_job.title)
-            print("job pay: ", new_job.pay)
-            print("job text: ", new_job.job_text)
-            print("job tags: ", new_job.tags)
-
-
-
-
-
-
+        self.application_provider.get_my_jobs()
 
 
 class Lanterna(SiteNavigator):

@@ -4,11 +4,16 @@
 
 #IMPORTS
 from utilities.Navigator import Navigator
+from tasks.ScheduleManager import Calendar
 
+
+# def main():
+#     navigator = Navigator("TutorChase China")
+#     navigator.run()
 
 def main():
-    navigator = Navigator("TutorChase China")
-    navigator.run()
+    calendar = Calendar()
+    print(calendar.api)
 
 
 if __name__ == "__main__":

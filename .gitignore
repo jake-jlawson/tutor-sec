@@ -3,3 +3,5 @@ __pycache__/
 venv/
 .env
 cookies/
+apis/GoogleCalendar/credentials.json
+apis/GoogleCalendar/token.json

@@ -96,6 +96,8 @@ class SubjectFilter(JobFilter):
     exclude_keywords = { 
         "Chem",
         "Bio",
+        "Econ",
+        "Sport"
     }
     
     def apply_criteria(self, job: Job):
@@ -103,16 +105,16 @@ class SubjectFilter(JobFilter):
         # check if the job contains any exclude keywords
         for keyword in self.exclude_keywords:
             if keyword.lower() in (job.title + job.job_text + job.tags).lower():
-                print("Job contains exclude words, rejecting...")
+                print("Job contains exclude subject words, rejecting...")
                 return False 
             
         # check if the job contains any include keywords
         for keyword in self.include_keywords:
             if keyword.lower() in (job.title + job.job_text + job.tags).lower():
-                print("Job match!")
+                print("Job subject match!")
                 return True
             
-        print("Job is unsuitable, rejecting...")
+        print("Job subject is unsuitable, rejecting...")
         return False
 
         
@@ -135,10 +137,10 @@ class TypeFilter(JobFilter):
     def apply_criteria(self, job: Job):
         for keyword in self.include_types:
             if keyword.lower() in (job.title + job.job_text + job.tags).lower():
-                print("Job match!")
+                print("Job type match!")
                 return True
             
-        print("Job is unsuitable, rejecting...")
+        print("Job type is unsuitable, rejecting...")
         return False
 
         

@@ -22,7 +22,7 @@ from selenium.webdriver.common.by import By
 from bs4 import BeautifulSoup
 
 from tasks.ClientApplications import ApplicationProvider
-from tasks.JobsManager import Job
+from tasks.JobsManager import Job, AvailabilityFilter, TypeFilter, SubjectFilter
 
 
 load_dotenv() #load the environment variables
@@ -52,8 +52,6 @@ class SiteNavigator(ABC):
     
 
     def __init__(self):
-
-        self.application_provider = ApplicationProvider()
         
         # Check if the cookie folder exists, if not, create it
         self.cookie_folder = "cookies"
@@ -290,6 +288,7 @@ class TutorCruncher(SiteNavigator):
         print("number of jobs: ", len(job_elements))
 
         #iterate through each job and add them to the application provider
+        available_jobs = []
         for job in job_elements:
             # #job fields
             title = job.find("h3", class_="card-title").text
@@ -299,10 +298,9 @@ class TutorCruncher(SiteNavigator):
 
             #create the job
             new_job = Job(title, pay, job_text, tags, job)
-            self.application_provider.add_job(new_job)
+            available_jobs.append(new_job)
             
-
-        self.application_provider.get_my_jobs()
+        return available_jobs
 
 
 class Lanterna(SiteNavigator):
@@ -334,9 +332,18 @@ class Navigator:
                 self._siteNavigator = Lanterna()
             case _:
                 raise ValueError(f"Invalid site navigator: {tutoring_company}")
+
+        # set the application provider
+        self.applications = ApplicationProvider()
             
+
     def run(self):
-        self._siteNavigator.get_available_jobs()
+        fetched_jobs = self._siteNavigator.get_available_jobs() #fetch available jobs from tutoring platform
+        self.applications.add_jobs(fetched_jobs) #add fetched jobs to the applications provider
+        self.applications.filter_jobs([SubjectFilter(), TypeFilter()]) #filter jobs to find jobs I can do
+        self.applications.get_jobs()
+
+
 
         # Keep the browser open for 30 seconds
         time.sleep(10)

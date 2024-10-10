@@ -32,8 +32,35 @@ class ApplicationProvider:
         self.generator = ApplicationGenerator()
         self.jobs = []
 
-    def add_job(self, job: Job):
-        self.jobs.append(job)
+
+    # JOBS METHODS
+    def get_jobs(self):
+        print("Jobs: ")
+        for job in self.jobs:
+            print(job.title)
+
+        return self.jobs
+
+
+    def add_jobs(self, jobs_in: any):
+        if isinstance(jobs_in, list):
+            for job in jobs_in:
+                if isinstance(job, Job):
+                    self.jobs.append(job)
+                else:
+                    print("Invalid job in list")
+        elif isinstance(jobs_in, Job):
+            self.jobs.append(jobs_in)
+        else:
+            print("Invalid input data")
+        
+
+    def filter_jobs(self, filters: list) -> list[Job]:
+        for filter in filters:
+            self.jobs = filter.run(self.jobs)
+
+        return self.jobs
+
 
     def get_my_jobs(self):
        

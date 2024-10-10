@@ -4,12 +4,12 @@
 # File:            || ScheduleManager.py ||
 # Description:     || Module for managing my calendar and tutoring schedule ||
 
-import datetime
+from datetime import datetime, timedelta
 from apis.GoogleCalendar.GoogleCalendar import GoogleCalendar
 
 
 class Availability:
-    def __init__(self, start_time: datetime.datetime, end_time: datetime.datetime, country: str):
+    def __init__(self, start_time: datetime, end_time: datetime, country: str):
         self.bounds = [start_time, end_time]
         self.duration = (end_time - start_time).total_seconds() / 3600
         self.country = country
@@ -28,6 +28,14 @@ class Calendar:
         Returns:
             list[Availability]: List of available time slots for tutoring
         """
+
+        # Get tutoring slots for the upcoming week (starting on Sunday)
+        today = datetime.now().date()
+        sunday = today - timedelta(days=today.weekday())
+        week_start = sunday + timedelta(days=7)
+
+        print(week_start)
+
         
         
         

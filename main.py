@@ -13,7 +13,7 @@ from tasks.ScheduleManager import Calendar
 
 def main():
     calendar = Calendar()
-    print(calendar.api)
+    calendar.get_availability()
 
 
 if __name__ == "__main__":

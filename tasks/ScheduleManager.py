@@ -17,7 +17,10 @@ class TimeSlot:
     def __init__(self, start_time: datetime, end_time: datetime, country: str = None, tz = None):
         self.bounds = [start_time, end_time]
         self.duration = (end_time - start_time).total_seconds() / 3600
-        self.day = start_time.weekday()
+
+        # Convert to Sunday-based weekday (0 = Sunday, 6 = Saturday)
+        self.day = self.bounds[0].strftime("%A")
+
 
         # TZ Information
         if isinstance(tz, str):
@@ -32,6 +35,15 @@ class TimeSlot:
 
         self.tz = tz
         self.country = country
+
+
+    def change_tz(self, tz: pytz.timezone):
+        self.tz = tz
+        self.country = tz.zone
+
+        #change bounds
+        self.bounds[0] = self.bounds[0].astimezone(tz)
+        self.bounds[1] = self.bounds[1].astimezone(tz)
 
 
 
@@ -58,7 +70,7 @@ class Calendar:
 
 
     # Utility methods
-    def event_to_timeslot(self, event: dict) -> TimeSlot:
+    def event_to_timeslot(self, event: dict, tz = None) -> TimeSlot:
         """Converts a google calendar event to a TimeSlot
 
         Args:
@@ -70,7 +82,21 @@ class Calendar:
 
         start = datetime.fromisoformat(event["start"]["dateTime"])
         end = datetime.fromisoformat(event["end"]["dateTime"])
-        tz = event["start"]["timeZone"]
+
+        if (tz is None):
+            if "timeZone" in event["start"]:
+                tz = event["start"]["timeZone"]
+            else:
+                raise ValueError("No timezone provided")
+            
+        else:
+            #if string is provided, convert to pytz timezone object
+            if isinstance(tz, str):
+                tz = pytz.timezone(tz)
+            elif isinstance(tz, pytz.timezone):
+                tz = tz
+            else:
+                raise ValueError("Invalid timezone provided")
 
         return TimeSlot(start, end, tz=tz)
 
@@ -86,37 +112,46 @@ class Calendar:
         tutoring_slots = self.get_tutoring_slots()
         
 
-        # get list of other commitments within each tutoring slot
+        # get list of other commitments (BUSY SLOTS) within each tutoring slot
         calendars_to_search = [{"id": calendar} for calendar in self.calendar_ids.values()] # format list of calendars to search
+        calendars_to_search.remove({"id": self.calendar_ids["tutoring_blocks"]}) #remove tutoring blocks calendar from list
+        
+        freebusy = self.api.freebusy() # use freebusy api to get list of availability for each tutoring slot
 
-        # use freebusy api to get list of availability for each tutoring slot
-        freebusy = self.api.freebusy()
-        available_slots = []
-
+        blocked_time = [] #array to collect tutoring slots and blocked time
         for slot in tutoring_slots:
             #format time as RFC3339
             time_min = slot.bounds[0].astimezone(slot.tz).isoformat()
             time_max = slot.bounds[1].astimezone(slot.tz).isoformat()
-        
-            request_body = { # create request body
-                "timeMin": time_min,
-                "timeMax": time_max,
-                "items": calendars_to_search,
-                "timeZone": str(slot.tz)
-            }
 
             try:
-                result = freebusy.query(body=request_body).execute()
-                print(result)
+                result = freebusy.query(body={
+                    "timeMin": time_min,
+                    "timeMax": time_max,
+                    "items": calendars_to_search,
+                    "timeZone": str(slot.tz)
+                }).execute()
 
             except Exception as e:
                 print(e)
 
+            busy_slots = collect_busy_periods(result, slot.tz) #array of busy slots
+            blocked_time.append([slot, busy_slots])
 
 
-    
+        # remove busy slots from tutoring slots
+        available_slots = []
+        for slot, busy_slots in blocked_time:
+            available_slots.extend(resolve_time_conflicts(slot, busy_slots))
 
-    
+
+        # filter out slots that are less than 1 hour
+        available_slots = [slot for slot in available_slots if slot.duration >= 1]
+
+
+        return available_slots
+
+
     def get_tutoring_slots(self) -> list[TimeSlot]:
         """Retrieves tutoring slots for the upcoming week
 
@@ -149,5 +184,57 @@ class Calendar:
             slots.append(self.event_to_timeslot(slot))
 
         return slots
+
+
+
+#Scheduling Utility Functions
+def collect_busy_periods(result: dict, timezone: pytz.timezone) -> list[TimeSlot]:
+    """Collects busy periods from a freebusy query result and converts them into TimeSlots
+
+    Args:
+        result (dict): Result from a freebusy query
+
+    Returns:
+        list[TimeSlot]: List of busy time slots
+    """
+
+    busy_slots = []
+
+    for calendar_id, calendar_data in result.get("calendars", {}).items():
+        for busy_period in calendar_data.get("busy", []):
+            start_time = datetime.fromisoformat(busy_period["start"])
+            end_time = datetime.fromisoformat(busy_period["end"])
+            busy_slots.append(TimeSlot(start_time=start_time, end_time=end_time, tz=timezone))
+    
+    return busy_slots
+
+
+def resolve_time_conflicts(time_window: TimeSlot, blocked_time: list[TimeSlot]) -> list[TimeSlot]:
+    """Accepts a time window and uses a list of blocked time slots to calculate the available time slots within that window
+    """
+    available_slots = []
+    current_start = time_window.bounds[0]
+
+    # Sort blocked_time to ensure we process them in order
+    blocked_time.sort(key=lambda x: x.bounds[0])
+
+    for block in blocked_time:
+        if block.bounds[0] > current_start and block.bounds[0] < time_window.bounds[1]:
+            # There's an available slot before this blocked time
+            available_slots.append(TimeSlot(start_time=current_start, end_time=block.bounds[0], tz=time_window.tz))
+        
+        # Move the current start time to the end of this blocked period
+        current_start = max(current_start, block.bounds[1])
+
+        # If we've moved past the end of our time window, we're done
+        if current_start >= time_window.bounds[1]:
+            break
+
+    # If there's still time left after the last blocked period, add it
+    if current_start < time_window.bounds[1]:
+        available_slots.append(TimeSlot(start_time=current_start, end_time=time_window.bounds[1], tz=time_window.tz))
+
+    return available_slots
+
 
 

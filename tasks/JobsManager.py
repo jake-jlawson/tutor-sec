@@ -41,6 +41,8 @@ class Job:
         return input.strip()
 
 
+
+
 #CLASS: JobFilter
 #Description: Abstract class for filtering jobs
 class JobFilter(ABC):
@@ -65,7 +67,6 @@ class JobFilter(ABC):
         return filtered_jobs
 
     
-
 
 #CLASS: AvailabilityFilter
 #Filter jobs by availability

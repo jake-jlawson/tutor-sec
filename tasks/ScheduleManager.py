@@ -69,7 +69,7 @@ class Calendar:
         }
 
 
-    # Utility methods
+    # UTILITY METHODS
     def event_to_timeslot(self, event: dict, tz = None) -> TimeSlot:
         """Converts a google calendar event to a TimeSlot
 
@@ -101,7 +101,7 @@ class Calendar:
         return TimeSlot(start, end, tz=tz)
 
 
-
+    # MAIN METHODS
     def get_availability(self) -> list[TimeSlot]:
         """Retrieves tutoring availability
 

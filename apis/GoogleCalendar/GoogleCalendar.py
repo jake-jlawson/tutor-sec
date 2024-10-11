@@ -11,8 +11,9 @@ from googleapiclient.errors import HttpError
 
 # API CONFIGURATION
 CALENDAR_SCOPES = ["https://www.googleapis.com/auth/calendar.readonly"]
-CREDENTIALS_PATH = "apis/GoogleCalendar/credentials.json"
-TOKEN_PATH = "apis/GoogleCalendar/token.json"
+API_PATH = "apis/GoogleCalendar/"
+CREDENTIALS_PATH = API_PATH + "credentials.json"
+TOKEN_PATH = API_PATH + "token.json"
 
 
 class GoogleCalendar:

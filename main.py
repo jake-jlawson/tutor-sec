@@ -13,7 +13,16 @@ from tasks.ScheduleManager import Calendar
 
 def main():
     calendar = Calendar()
-    calendar.get_availability()
+    availability = calendar.get_availability()
+    
+    # print(availability)
+    # for slot in availability:
+    #     print("Available Slot:")
+    #     print("bounds: ", slot.bounds)
+    #     print("day: ", slot.day)
+    #     print("duration: ", slot.duration)
+    #     print("timezone: ", slot.tz)
+    #     print("country: ", slot.country)
 
 
 if __name__ == "__main__":

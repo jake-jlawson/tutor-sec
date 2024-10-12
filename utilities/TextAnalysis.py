@@ -10,6 +10,8 @@ from abc import ABC, abstractmethod
 from tasks.ScheduleManager import TimeSlot
 from pydantic import BaseModel
 from datetime import datetime, timedelta
+import json
+import calendar
 
 
 
@@ -113,17 +115,10 @@ class TimingsData(BaseModel):
     timezone: str | None #timezone of the client
     sessions_per_week: float | None #number of hours per week
     total_hours: float | None #total number of hours the client requires
-    availability: AvailabilityData | None #list of time slots that the client is available
+    availability: AvailabilityData #list of time slots that the client is available
 
 class AvailabilityAnalyser(TextAnalyser):
     # Approximate cost per analysis: $0.0025 (input) + $0.003 (output) = $0.0055
-
-    # current week start
-    today = datetime.now()
-    days_ahead = 7 - today.weekday() if today.weekday() != 6 else 1
-    upcoming_monday = today + timedelta(days=days_ahead)
-
-    upcoming_week_start = upcoming_monday.strftime("%Y-%m-%d")
 
     system_prompt = """
         You will be given a string of text representing a tutoring job listing.
@@ -148,7 +143,8 @@ class AvailabilityAnalyser(TextAnalyser):
         The times should be in 24hr format, and in the format of %H:%M:%S.
         If times are discussed vaguely (e.g. "any time after 5pm on weekdays"), return a reasonable estimate of these time blocks (e.g. 17:00-23:00 for each of Monday-Friday).
         If not specified otherwise, the minimum start time should be 08:00:00 and the maximum end time should be 23:00:00. 
-        If no information about availability is present or it cannot be determined, return null.
+        If no information about availability on a particular day is present, return an empty list for that day.
+        If no information about availability is present at all, assume the client is available all day every day.
     """
 
     def analyse(self, text: str):
@@ -162,12 +158,44 @@ class AvailabilityAnalyser(TextAnalyser):
 
     def get_availabilities(self, text: str) -> list[TimeSlot]: #get availabilities as a list of TimeSlot objects
 
-        availability_data = self.analyse(text)
+        availability_data = json.loads(self.analyse(text))
+        print("availability_data: ", availability_data)
 
         timezone = availability_data['timezone']
         availabilities = availability_data['availability']
 
-        print("timezone: ", timezone)
-        print("availabilities: ", availabilities)
+
+        # Handle case where timezone is unknown
+        if (timezone is None):
+            return []
+
+
+        # convert availabilities to list of TimeSlot objects
+        time_slots = []
+        for day, times in availabilities.items():
+
+            # get day in terms of the upcoming week
+            today = datetime.now().date() + timedelta(days=2)
+            sunday = today - timedelta(days=(today.weekday()+1))
+            week_start = sunday + timedelta(days=7) #next week start
+
+            day_date = week_start + timedelta(days=(list(calendar.day_name).index(day.capitalize()) + 1) % 7)
+
+            # convert time blocks to TimeSlot objects
+            for time_block in times:
+                start_time = datetime.combine(day_date, datetime.strptime(time_block[0], "%H:%M:%S").time())
+                end_time = datetime.combine(day_date, datetime.strptime(time_block[1], "%H:%M:%S").time())
+
+                time_slots.append(TimeSlot(start_time=start_time, end_time=end_time, country=timezone, tz=timezone))
+
+
+        return time_slots
+
+
+
+
+
+
+
 
         

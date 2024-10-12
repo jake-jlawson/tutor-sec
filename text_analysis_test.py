@@ -16,4 +16,4 @@ testcases = [
 for test in testcases:
     analyser = AvailabilityAnalyser(model="gpt-4o-mini")
     print(test)
-    print(analyser.analyse(test))
+    analyser.get_availabilities(test)

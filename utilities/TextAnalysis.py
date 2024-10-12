@@ -158,3 +158,16 @@ class AvailabilityAnalyser(TextAnalyser):
         ], response_format=TimingsData)
 
         return completion.choices[0].message.content
+    
+
+    def get_availabilities(self, text: str) -> list[TimeSlot]: #get availabilities as a list of TimeSlot objects
+
+        availability_data = self.analyse(text)
+
+        timezone = availability_data['timezone']
+        availabilities = availability_data['availability']
+
+        print("timezone: ", timezone)
+        print("availabilities: ", availabilities)
+
+        

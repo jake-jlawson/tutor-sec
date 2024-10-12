@@ -323,7 +323,6 @@ class TutorCruncher(SiteNavigator):
             job_desc_link = job_desc_link[1:]
 
         desc_url = self.url + job_desc_link #long description url
-        print("desc url: ", desc_url)
 
 
         # try to find the detailed job text
@@ -341,7 +340,7 @@ class TutorCruncher(SiteNavigator):
 
         # if no detailed job text found, return the job as is
         except:
-            print("No detailed job text found")
+            pass
 
         return job
 

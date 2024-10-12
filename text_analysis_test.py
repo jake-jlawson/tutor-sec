@@ -1,6 +1,6 @@
 
 
-from utilities.TextAnalysis import AvailabilityAnalyser1, AvailabilityAnalyser2
+from utilities.TextAnalysis import AvailabilityAnalyser1, AvailabilityAnalyser
 
 testcases = [
     """
@@ -64,6 +64,6 @@ testcases = [
 ]
 
 for test in testcases:
-    analyser = AvailabilityAnalyser2(model="gpt-4o-mini")
+    analyser = AvailabilityAnalyser(model="gpt-4o-mini")
     print(test)
     analyser.analyse(test)

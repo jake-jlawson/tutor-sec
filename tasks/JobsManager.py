@@ -9,6 +9,8 @@ import re
 from abc import ABC, abstractmethod
 from tasks.ScheduleManager import availability_from_text
 
+from utilities.TextAnalysis import AvailabilityAnalyser
+
 
 #CLASS: Job
 #Description: Class used to store information about a job
@@ -58,12 +60,9 @@ class JobFilter(ABC):
         filtered_jobs = []
         
         for job in jobs:
-            print(f"Applying criteria to job: {job.title}")
             #remove jobs that don't meet the criteria
             if self.apply_criteria(job):
                 filtered_jobs.append(job)
-            else:
-                print(f"Job {job.title} did not meet criteria and was removed")
 
         return filtered_jobs
 
@@ -83,11 +82,16 @@ class AvailabilityFilter(JobFilter):
             bool: True if the job lines up with the user's availability, False otherwise
         """
 
-        input_text = job.job_text #get the job text to evaluate
-        availability_text = availability_from_text(input_text)
+        input_text = job.title + "\n" + job.job_text #get the job text to evaluate
+
+        # set up the analyser
+        analyser = AvailabilityAnalyser(model="gpt-4o-mini")
+        availability_data = analyser.analyse(input_text)
+
+
         print("Job: ", job.title)
         print("Input text: ", input_text)
-        print("Availability text: ", availability_text)
+        print("Availability text: ", availability_data)
 
         return True
 
@@ -124,16 +128,13 @@ class SubjectFilter(JobFilter):
         # check if the job contains any exclude keywords
         for keyword in self.exclude_keywords:
             if keyword.lower() in (job.title + job.job_text + job.tags).lower():
-                print("Job contains exclude subject words, rejecting...")
                 return False 
             
         # check if the job contains any include keywords
         for keyword in self.include_keywords:
             if keyword.lower() in (job.title + job.job_text + job.tags).lower():
-                print("Job subject match!")
                 return True
             
-        print("Job subject is unsuitable, rejecting...")
         return False
 
         
@@ -144,7 +145,8 @@ class TypeFilter(JobFilter):
     include_types = [
         "ESAT",
         "PAT",
-        "ENGAA"
+        "MAT",
+        "ENGAA",
         "GCSE",
         "A Level",
         "IB",
@@ -156,10 +158,8 @@ class TypeFilter(JobFilter):
     def apply_criteria(self, job: Job):
         for keyword in self.include_types:
             if keyword.lower() in (job.title + job.job_text + job.tags).lower():
-                print("Job type match!")
                 return True
             
-        print("Job type is unsuitable, rejecting...")
         return False
 
         

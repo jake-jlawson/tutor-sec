@@ -1,4 +1,5 @@
 from openai import OpenAI
+from pydantic import BaseModel
 import os
 
 # load environment variables
@@ -14,5 +15,12 @@ class GPT:
     def chat_completion(self, messages: list[dict]):
         return self.client.chat.completions.create(
             model=self.model,
-            messages=messages
+            messages=messages,
+        )
+    
+    def parse_completion(self, messages: list[dict], response_format: BaseModel):
+        return self.client.beta.chat.completions.parse(
+            model=self.model,
+            messages=messages,
+            response_format=response_format
         )

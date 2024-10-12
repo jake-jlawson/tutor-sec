@@ -13,6 +13,8 @@ def main():
     navigator.run()
 
 
+
+
 # def main():
 #     calendar = Calendar()
 #     availability = calendar.get_availability()

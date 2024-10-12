@@ -85,7 +85,7 @@ class AvailabilityFilter(JobFilter):
         input_text = job.title + "\n" + job.job_text #get the job text to evaluate
 
         # set up the analyser
-        analyser = AvailabilityAnalyser(model="gpt-4o-mini")
+        analyser = AvailabilityAnalyser(model="gpt-4o")
         availability_data = analyser.analyse(input_text)
 
 

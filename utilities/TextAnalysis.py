@@ -9,7 +9,7 @@ from apis.OpenAI.GPT import GPT
 from abc import ABC, abstractmethod
 from tasks.ScheduleManager import TimeSlot
 from pydantic import BaseModel
-from datetime import datetime
+from datetime import datetime, timedelta
 
 
 
@@ -101,13 +101,29 @@ class AvailabilityAnalyser1(TextAnalyser):
 #CLASS: AVAILABILITY ANALYSER2
 # DESCRIPTION: Analyses text and extracts availability information
 class AvailabilityData(BaseModel):
+    Sunday: list[list[str, str]]
+    Monday: list[list[str, str]]
+    Tuesday: list[list[str, str]]
+    Wednesday: list[list[str, str]]
+    Thursday: list[list[str, str]]
+    Friday: list[list[str, str]]
+    Saturday: list[list[str, str]]
+
+class TimingsData(BaseModel):
     timezone: str | None #timezone of the client
     sessions_per_week: float | None #number of hours per week
     total_hours: float | None #total number of hours the client requires
-    availability: list[list[str, str]] | None #list of time slots that the client is available
-
+    availability: AvailabilityData | None #list of time slots that the client is available
 
 class AvailabilityAnalyser(TextAnalyser):
+    # Approximate cost per analysis: $0.0025 (input) + $0.003 (output) = $0.0055
+
+    # current week start
+    today = datetime.now()
+    days_ahead = 7 - today.weekday() if today.weekday() != 6 else 1
+    upcoming_monday = today + timedelta(days=days_ahead)
+
+    upcoming_week_start = upcoming_monday.strftime("%Y-%m-%d")
 
     system_prompt = """
         You will be given a string of text representing a tutoring job listing.
@@ -115,10 +131,10 @@ class AvailabilityAnalyser(TextAnalyser):
         - timezone: a string representing the infered timezone of the client.
         - sessions_per_week: a float representing the number of hours per week that the client requires
         - total_hours: a float representing the total number of hours the client requires
-        - availability: a list of pairs of datetimes representing the start and end dates/times of time blocks where the client is available
+        - availability: an object containing pairs of times for each day of the week which represent the start and end dates/times of time blocks where the client is available
 
         For timezones, make sure to look at the full text and utilize relevant information to infer the correct timezone, especially any parts of the text that mention the location of the client, where they are based or their exact timezone.
-        Be careful not to over-infer the timezone. View locations in context. If locations are mentioned in relation to universities they are applying to, this does not necessarily correspond to their current location.
+        Be careful not to over-infer the timezone. View locations in context. If locations are mentioned in relation to universities they are applying to (e.g. "UK Universities", "Cambridge", "Oxford", etc.), ignore these pieces of information.
         If a location (city, country, continent, etc.) is given but not a particular timezone, return "Europe/London" if the location is Europe, return "America/New_York" if the location is North America, otherwise return the closest timezone.
         If timezone cannot be determined, return null.
         
@@ -128,18 +144,17 @@ class AvailabilityAnalyser(TextAnalyser):
         For total hours, return only a number (float or integer) representing the total number of hours the client requires. If this is not explicitly stated, but information exists to calculate it, do so.
         If no information about this is present, return null.
         
-        For availability, the datetimes returned should be in the format of ISO 8601 (e.g. 2024-10-12T10:00:00).
-        Times returned should be blocks of time, (e.g. if the client is available from 10:00-12:00 and 14:00-16:00, this should be returned as two separate pairs of datetimes).
-        Times should be exactly as they are in the input text, with no timezone conversions. 
-        If times are discussed vaguely (e.g. "any time after 5pm on weekdays"), return an estimate of these time blocks (e.g. 17:00-22:00 for each of Monday-Friday).
-        Only include times for a single week (Sunday to Saturday).
-        If no information about this is present or it cannot be determined, return null.
+        For availability, each day should have a list of time blocks, with each time block being a list [start_time, end_time] representing the start and end times of the block respectively.
+        The times should be in 24hr format, and in the format of %H:%M:%S.
+        If times are discussed vaguely (e.g. "any time after 5pm on weekdays"), return a reasonable estimate of these time blocks (e.g. 17:00-23:00 for each of Monday-Friday).
+        If not specified otherwise, the minimum start time should be 08:00:00 and the maximum end time should be 23:00:00. 
+        If no information about availability is present or it cannot be determined, return null.
     """
 
     def analyse(self, text: str):
         completion = self.gpt.parse_completion(messages=[
             {"role": "system", "content": self.base_prompt + self.system_prompt},
             {"role": "user", "content": text},
-        ], response_format=AvailabilityData)
+        ], response_format=TimingsData)
 
         return completion.choices[0].message.content

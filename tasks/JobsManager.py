@@ -12,12 +12,12 @@ from abc import ABC, abstractmethod
 #CLASS: Job
 #Description: Class used to store information about a job
 class Job:
-    def __init__(self, title: str, pay: str, job_text: str, tags: list[str], element: str):
+    def __init__(self, title: str, pay: str, job_text: str, tags: list[str], job_elements: dict[str, any]):
         self.title = self.clean_input(title)
         self.pay = self.getPay(pay)
         self.job_text = self.clean_input(job_text)
         self.tags = tags
-        self.element = element
+        self.elements = job_elements
 
 
     #Description: Extracts the pay from the pay string
@@ -71,8 +71,18 @@ class JobFilter(ABC):
 #CLASS: AvailabilityFilter
 #Filter jobs by availability
 class AvailabilityFilter(JobFilter):
-    def apply_criteria(self, job: Job):
+    def apply_criteria(self, job: Job) -> bool:
+        """Check availability criteria
+        Function evaluates job attributes to ascertain job timings, and then checks these against the user's calendar to see if they fit.
+
+        Args:
+            job (Job): The job to check
+
+        Returns:
+            bool: True if the job lines up with the user's availability, False otherwise
+        """
         pass
+
 
 
 #CLASS: SubjectFilter

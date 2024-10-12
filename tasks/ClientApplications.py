@@ -38,6 +38,7 @@ class ApplicationProvider:
         print("Jobs: ")
         for job in self.jobs:
             print(job.title)
+            print(job.job_text)
 
         return self.jobs
 

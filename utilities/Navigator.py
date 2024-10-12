@@ -49,7 +49,12 @@ class SiteNavigator(ABC):
     @abstractmethod
     def navigate_to(self, page: str, url: str = None):
         """Navigate to a specific page."""
+
+    @abstractmethod
+    def get_available_jobs(self, url: str = None):
+        """Get available jobs from the site."""
     
+
 
     def __init__(self):
         
@@ -274,6 +279,7 @@ class TutorCruncher(SiteNavigator):
                 print(f"An error occurred while navigating: {str(e)}")
 
 
+    # JOBS METHODS
     def get_available_jobs(self, url: str = None):
         # Navigate to the available jobs page
         self.navigate_to("Available Jobs")
@@ -290,17 +296,59 @@ class TutorCruncher(SiteNavigator):
         #iterate through each job and add them to the application provider
         available_jobs = []
         for job in job_elements:
-            # #job fields
-            title = job.find("h3", class_="card-title").text
-            pay = job.find("div", class_="tcc-pay-rate").text
-            job_text = job.find_all("div", class_="detail-long-item")[0].text
-            tags = job.find_all("div", class_="detail-long-item")[1].text
-
+            #job fields
+            title = job.find("h3", class_="card-title")
+            pay = job.find("div", class_="tcc-pay-rate")
+            tags = job.find_all("div", class_="detail-long-item")[1]
+            job_text = job.find_all("div", class_="detail-long-item")[0]
+            elements = {
+                "job_link": title.find("a"),
+                "apply_link": job.find("a", class_="btn")
+            }
+            
             #create the job
-            new_job = Job(title, pay, job_text, tags, job)
+            new_job = Job(title.text, pay.text, job_text.text, tags.text, elements)
             available_jobs.append(new_job)
             
         return available_jobs
+
+    def get_detailed_job_text(self, job: Job) -> Job:
+        """ Function takes in a job object and replaces the job text with the detailed job text
+        """
+
+        job_desc_link = job.elements["job_link"].get("href")
+
+        #remove the first character if it is a "/"
+        if job_desc_link[0] == "/":
+            job_desc_link = job_desc_link[1:]
+
+        desc_url = self.url + job_desc_link #long description url
+        print("desc url: ", desc_url)
+
+
+        # try to find the detailed job text
+        try:
+            self.driver.get(desc_url)
+            self.wait_on("page_load")
+
+            # get the page source
+            soup = BeautifulSoup(self.driver.page_source, 'html.parser')
+            job_text = soup.find("div", class_="tcc-job-description")
+
+            # replace the job text
+            job.job_text = job_text.text
+            return job
+
+        # if no detailed job text found, return the job as is
+        except:
+            print("No detailed job text found")
+
+        return job
+
+
+
+
+
 
 
 class Lanterna(SiteNavigator):
@@ -341,6 +389,11 @@ class Navigator:
         fetched_jobs = self._siteNavigator.get_available_jobs() #fetch available jobs from tutoring platform
         self.applications.add_jobs(fetched_jobs) #add fetched jobs to the applications provider
         self.applications.filter_jobs([SubjectFilter(), TypeFilter()]) #filter jobs to find jobs I can do
+
+        # replace each job's job_text with the detailed job text
+        for job in self.applications.jobs:
+            job = self._siteNavigator.get_detailed_job_text(job)
+
         self.applications.get_jobs()
 
 

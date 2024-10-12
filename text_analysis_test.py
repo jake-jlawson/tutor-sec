@@ -5,8 +5,9 @@ from utilities.TextAnalysis import AvailabilityAnalyser1, AvailabilityAnalyser
 testcases = [
     """
     Subject: Cambridge & IC Interview Prep Tuition ( Biology )
+    Student is in China
     Student apply for Cambridge and IC , major is Natural Science - biology and IC's biology undergraduate program
-    Availability: student can start session asap. Student is only available Sundays from 4-5pm and 7pm onwards. Please provide tutor's availability if possible
+    Availability: student can start session asap. Student is only available on weekdays. Please provide tutor's availability if possible
     Feedback report: Required for each session
     Course outline: Required after the first session
     Platform: Lessonspace

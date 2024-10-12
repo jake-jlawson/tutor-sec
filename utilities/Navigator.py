@@ -394,6 +394,8 @@ class Navigator:
         for job in self.applications.jobs:
             job = self._siteNavigator.get_detailed_job_text(job)
 
+        self.applications.filter_jobs([AvailabilityFilter()])
+
         self.applications.get_jobs()
 
 

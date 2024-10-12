@@ -7,6 +7,7 @@
 import pytz
 from datetime import datetime, timedelta
 from apis.GoogleCalendar.GoogleCalendar import GoogleCalendar
+from apis.OpenAI.GPT import GPT
 
 
 
@@ -235,6 +236,51 @@ def resolve_time_conflicts(time_window: TimeSlot, blocked_time: list[TimeSlot]) 
         available_slots.append(TimeSlot(start_time=current_start, end_time=time_window.bounds[1], tz=time_window.tz))
 
     return available_slots
+
+
+def availability_from_text(input_text: str):
+    """Uses GPT to evaluate a string of text and extract the user's availability
+    """
+
+    prompt = """
+        You are an expert at analyzing text and extracting information.
+        You will be given text representing a tutoring job listing from a client.
+        Your task is to extract and summarise any information contained in this listing that discusses the client's availability.
+        Things you could identify:
+        - The number of sessions per week
+        - Days of the week that the user is available
+        - Times during these days that the user is available
+        - Location of the client (timezone) 
+
+        If none of the information above is found within the text, return "No availability found"
+    """
+
+    new_gpt = GPT(model="gpt-4o-mini")
+
+    completion = new_gpt.chat_completion(messages=[
+        {
+                "role": "system", 
+                "content": [
+                    {
+                        "type": "text",
+                        "text": prompt
+                    }
+
+                ]
+            },
+            {
+                "role": "user", 
+                "content": [
+                    {
+                        "type": "text",
+                        "text": input_text
+                    }
+                ]
+            }
+    ])
+
+    return completion.choices[0].message.content
+
 
 
 

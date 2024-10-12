@@ -7,6 +7,7 @@
 # IMPORTS
 import re
 from abc import ABC, abstractmethod
+from tasks.ScheduleManager import availability_from_text
 
 
 #CLASS: Job
@@ -81,7 +82,14 @@ class AvailabilityFilter(JobFilter):
         Returns:
             bool: True if the job lines up with the user's availability, False otherwise
         """
-        pass
+
+        input_text = job.job_text #get the job text to evaluate
+        availability_text = availability_from_text(input_text)
+        print("Job: ", job.title)
+        print("Input text: ", input_text)
+        print("Availability text: ", availability_text)
+
+        return True
 
 
 

@@ -7,7 +7,7 @@
 # IMPORTS
 import re
 from abc import ABC, abstractmethod
-from tasks.ScheduleManager import availability_from_text
+from tasks.ScheduleManager import availability_from_text, get_overlaps, Calendar
 
 from utilities.TextAnalysis import AvailabilityAnalyser
 
@@ -86,14 +86,21 @@ class AvailabilityFilter(JobFilter):
 
         # set up the analyser
         analyser = AvailabilityAnalyser(model="gpt-4o")
-        availability_data = analyser.analyse(input_text)
+        availability_data = analyser.get_availabilities(input_text)
+
+        # get calendar availability
+        calendar = Calendar()
+        calendar_availability = calendar.get_availability()
+
+        # get overlaps
+        overlaps = get_overlaps(focus_slots=calendar_availability, comparison_slots=availability_data)
 
 
-        print("Job: ", job.title)
-        print("Input text: ", input_text)
-        print("Availability text: ", availability_data)
-
-        return True
+        # check condition
+        if len(overlaps) > 0:
+            return True
+        else:
+            return False
 
 
 

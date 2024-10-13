@@ -128,8 +128,9 @@ class AvailabilityAnalyser(TextAnalyser):
         - total_hours: a float representing the total number of hours the client requires
         - availability: an object containing pairs of times for each day of the week which represent the start and end dates/times of time blocks where the client is available
 
-        For timezones, look for any part of the text that refers to where the student lives, where they are based, where they are currently located, or their exact timezone. Ignore all other locations.
-        If a client's location is given but not a particular timezone, return "Europe/London" if the location is Europe, return "America/New_York" if the location is North America, otherwise return the closest timezone.
+        For infering timezones, look at parts of the text that refer to where the student lives, where they are based, where they are currently located, or their exact timezone. Ignore all other locations such as universities/schools they are applying to, etc.
+        Make sure to view any locations that appear in the text in context, and ensure that they are definitely referring to the client's location, and not universities/schools they are applying to, or other things.
+        If the location given is a valid location but not a timezone (ie. country, city, continent, etc.) return "Europe/London" if the location is "Europe", otherwise return the closest timezone.
         If timezone cannot be determined, return null.
         
         For sessions per week, return only a number (float or integer) representing hours per week. If a range is given (e.g. "2-3"), return the average of this range.
@@ -141,7 +142,7 @@ class AvailabilityAnalyser(TextAnalyser):
         For availability, each day should have a list of time blocks, with each time block being a list [start_time, end_time] representing the start and end times of the block respectively.
         The times should be in 24hr format, and in the format of %H:%M:%S.
         If times are discussed vaguely (e.g. "any time after 5pm on weekdays"), return a reasonable estimate of these time blocks (e.g. 17:00-23:00 for each of Monday-Friday).
-        Unless stated otherwise, the minimum start time should be 08:00:00 and the maximum end time should be 23:00:00.
+        Unless stated otherwise, the minimum start time should be 08:00:00 on weekends and 15:00:00 on weekdays, and the maximum end time should be 23:00:00.
         If no specific days or times are provided, fill in every day with [min, max].
         If availability is discussed for specific days only, fill in the other days where no availability is specified with empty lists.
     """
@@ -155,7 +156,7 @@ class AvailabilityAnalyser(TextAnalyser):
         return completion.choices[0].message.content
     
 
-    def get_availabilities(self, text: str) -> list[TimeSlot]: #get availabilities as a list of TimeSlot objects
+    def get_availabilities(self, text: str) -> list[TimeSlot] | None: #get availabilities as a list of TimeSlot objects
 
         availability_data = json.loads(self.analyse(text))
         print("availability_data: ", availability_data)
@@ -165,8 +166,8 @@ class AvailabilityAnalyser(TextAnalyser):
 
 
         # Handle case where timezone is unknown
-        if (timezone is None):
-            return []
+        if (timezone is None) or (timezone == "None") or (timezone == "null"):
+            return None
 
 
         # convert availabilities to list of TimeSlot objects
@@ -174,7 +175,7 @@ class AvailabilityAnalyser(TextAnalyser):
         for day, times in availabilities.items():
 
             # get day in terms of the upcoming week
-            today = datetime.now().date() + timedelta(days=2)
+            today = datetime.now().date()
             sunday = today - timedelta(days=(today.weekday()+1))
             week_start = sunday + timedelta(days=7) #next week start
 

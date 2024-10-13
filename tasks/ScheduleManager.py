@@ -5,7 +5,7 @@
 # Description:     || Module for managing my calendar and tutoring schedule ||
 
 import pytz
-from datetime import datetime, timedelta
+from datetime import datetime, timedelta, time
 from apis.GoogleCalendar.GoogleCalendar import GoogleCalendar
 from apis.OpenAI.GPT import GPT
 
@@ -37,6 +37,28 @@ class TimeSlot:
         self.tz = tz
         self.country = country
 
+        self.set_tz()
+
+
+    def set_tz(self):
+        """
+        Sets the timezone of the TimeSlot to the specified timezone,
+        keeping the same clock time (e.g., 6:00 PM stays 6:00 PM).
+        """
+        # Create new datetime objects with the same time in the new timezone
+        new_start = datetime.combine(
+            self.bounds[0].date(),
+            time(self.bounds[0].hour, self.bounds[0].minute, self.bounds[0].second)
+        )
+        new_end = datetime.combine(
+            self.bounds[1].date(),
+            time(self.bounds[1].hour, self.bounds[1].minute, self.bounds[1].second)
+        )
+
+        # Localize the new datetimes to the new timezone
+        self.bounds[0] = self.tz.localize(new_start)
+        self.bounds[1] = self.tz.localize(new_end)
+
 
     def change_tz(self, tz: pytz.timezone):
         self.tz = tz
@@ -45,6 +67,15 @@ class TimeSlot:
         #change bounds
         self.bounds[0] = self.bounds[0].astimezone(tz)
         self.bounds[1] = self.bounds[1].astimezone(tz)
+
+    
+    def print(self):
+        print("----TIMESLOT----")
+        print("Day: ", self.day)
+        print("Start Time: ", self.bounds[0].strftime("%d/%m/%Y %H:%M:%S"))
+        print("End Time: ", self.bounds[1].strftime("%d/%m/%Y %H:%M:%S"))
+        print("Timezone: ", self.tz)
+        print("Duration: ", self.duration)
 
 
 
@@ -280,6 +311,63 @@ def availability_from_text(input_text: str):
     ])
 
     return completion.choices[0].message.content
+
+
+def get_overlaps(focus_slots: list[TimeSlot], comparison_slots: list[TimeSlot]) -> list[TimeSlot]:
+    """Finds timeslots that overlap between two lists of timeslots
+
+    Args:
+        focus_slots (list[TimeSlot]): List of timeslots to check for overlaps
+        comparison_slots (list[TimeSlot]): List of timeslots to check against
+
+    Returns:
+        list[TimeSlot]: List of timeslots that overlap between the two lists
+    """
+
+    # Handle case where one list is None
+    if (focus_slots is None) and (comparison_slots is not None):
+            return comparison_slots
+    elif (comparison_slots is None) and (focus_slots is not None):
+        return focus_slots
+    elif (focus_slots is None) and (comparison_slots is None):
+        raise ValueError("Both lists of timeslots are None")
+
+    # Handle case where one or both lists are empty
+    if focus_slots == [] or comparison_slots == []:
+        return []
+    
+
+    # Ensure all timeslots are in the same timezone
+    timezone = focus_slots[0].tz
+    for timeslot in focus_slots:
+        timeslot.change_tz(timezone)
+    for timeslot in comparison_slots:
+        timeslot.change_tz(timezone)
+
+    
+    overlaps = []
+    for slot1 in focus_slots:
+        for slot2 in comparison_slots:
+            
+            # Find the latest start time and earliest end time
+            start = max(slot1.bounds[0], slot2.bounds[0])
+            print("Start: ", start)
+            end = min(slot1.bounds[1], slot2.bounds[1])
+            print("End: ", end)
+            
+            # If there's an overlap, create a new TimeSlot
+            if start < end:
+                print("Overlap Found")
+                overlaps.append(TimeSlot(start_time=start, end_time=end, tz=timezone))
+    
+    # Sort the overlaps by start time
+    overlaps.sort(key=lambda x: x.bounds[0])
+
+    #remove overlaps that are less than 1 hour
+    overlaps = [slot for slot in overlaps if slot.duration >= 1]
+    
+    return overlaps
+
 
 
 

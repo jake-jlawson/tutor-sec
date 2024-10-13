@@ -398,7 +398,6 @@ class Navigator:
         self.applications.get_jobs()
 
 
-
         # Keep the browser open for 30 seconds
         time.sleep(10)
         

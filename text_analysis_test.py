@@ -1,6 +1,6 @@
 
 
-from utilities.TextAnalysis import AvailabilityAnalyser1, AvailabilityAnalyser
+from utilities.TextAnalyser import AvailabilityAnalyser1, AvailabilityAnalyser
 from tasks.ScheduleManager import get_overlaps, Calendar
 
 

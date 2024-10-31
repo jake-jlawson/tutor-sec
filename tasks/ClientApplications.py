@@ -2,7 +2,7 @@
     CLIENT APPLICATIONS MODULE
 """
 # File:            || ClientApplications.py ||
-# Description:     || Module for searching jobs and applying for new clients ||
+# Description:     || Module performs all tasks related to applying for new tutoring jobs ||
 
 # IMPORTS
 import re
@@ -10,10 +10,6 @@ from abc import ABC, abstractmethod
 
 from tasks.JobsManager import *
 
-
-
-
-        
 
 #CLASS: ApplicationGenerator
 #Description: Class used to generate applications for jobs via LLMs

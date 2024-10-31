@@ -9,7 +9,7 @@ import re
 from abc import ABC, abstractmethod
 from tasks.ScheduleManager import availability_from_text, get_overlaps, Calendar
 
-from utilities.TextAnalysis import AvailabilityAnalyser
+from utilities.TextAnalyser import AvailabilityAnalyser
 
 
 #CLASS: Job

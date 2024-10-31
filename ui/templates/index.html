@@ -1,0 +1,20 @@
+<!-- templates/index.html -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>My Python App UI</title>
+    <script>
+        // send a request to the flask server to shut down when the page is closed
+        window.onbeforeunload = function() {
+            navigator.sendBeacon('/shutdown');
+        };
+    </script>
+</head>
+<body>
+    <h1>My Python Script UI</h1>
+    <label for="input">Enter Input:</label>
+    <input type="text" id="input">
+    <p id="result"></p>
+</body>
+</html>

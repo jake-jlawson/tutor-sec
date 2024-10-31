@@ -60,8 +60,10 @@ class JobFilter(ABC):
         filtered_jobs = []
         
         for job in jobs:
+            print("Job to filter: ", job.title)
             #remove jobs that don't meet the criteria
             if self.apply_criteria(job):
+                print("Job passed filter")
                 filtered_jobs.append(job)
 
         return filtered_jobs

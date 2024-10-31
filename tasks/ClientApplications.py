@@ -31,7 +31,7 @@ class ApplicationProvider:
 
     # JOBS METHODS
     def get_jobs(self):
-        print("Jobs: ")
+        print("JOBS ---------------------------------")
         for job in self.jobs:
             print(job.title)
             print(job.job_text)

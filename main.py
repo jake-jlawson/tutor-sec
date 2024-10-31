@@ -9,7 +9,7 @@ import pytz
 
 
 def main():
-    navigator = Navigator("TutorChase China")
+    navigator = Navigator("Oxbridge Applications")
     navigator.run()
 
 

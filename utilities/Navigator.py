@@ -155,6 +155,10 @@ class SiteNavigator(ABC):
             password_field = self.driver.find_element(By.CSS_SELECTOR, self.page_elements["password_field"])
             login_button = self.driver.find_element(By.CSS_SELECTOR, self.page_elements["login_button"])
 
+            # Use JavaScript to clear the fields
+            self.driver.execute_script("arguments[0].value = '';", username_field)
+            self.driver.execute_script("arguments[0].value = '';", password_field)
+
             #send the username and password to the fields
             username_field.send_keys(os.getenv("TUTORCRUNCHER_USERNAME"))
             password_field.send_keys(os.getenv("TUTORCRUNCHER_PASSWORD"))
@@ -222,7 +226,6 @@ class TutorCruncher(SiteNavigator):
 
                 #find the dropdown item
                 dropdown_items = self.wait_on(self.page_elements["agency_dropdown_item"])
-                print("dropdown items: ", dropdown_items)
 
                 # check each item in the dropdown to find the company
                 for item in dropdown_items:
@@ -312,6 +315,7 @@ class TutorCruncher(SiteNavigator):
             
         return available_jobs
 
+
     def get_detailed_job_text(self, job: Job) -> Job:
         """ Function takes in a job object and replaces the job text with the detailed job text
         """
@@ -388,6 +392,10 @@ class Navigator:
         fetched_jobs = self._siteNavigator.get_available_jobs() #fetch available jobs from tutoring platform
         self.applications.add_jobs(fetched_jobs) #add fetched jobs to the applications provider
         self.applications.filter_jobs([SubjectFilter(), TypeFilter()]) #filter jobs to find jobs I can do
+
+        print("JOBS PRE AVAILABILITY FILTER--------------------")
+        for job in self.applications.jobs:
+            print(job.title)
 
         # replace each job's job_text with the detailed job text
         for job in self.applications.jobs:

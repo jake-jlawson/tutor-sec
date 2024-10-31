@@ -326,7 +326,7 @@ def get_overlaps(focus_slots: list[TimeSlot], comparison_slots: list[TimeSlot]) 
 
     # Handle case where one list is None
     if (focus_slots is None) and (comparison_slots is not None):
-            return comparison_slots
+        return comparison_slots
     elif (comparison_slots is None) and (focus_slots is not None):
         return focus_slots
     elif (focus_slots is None) and (comparison_slots is None):
@@ -351,9 +351,7 @@ def get_overlaps(focus_slots: list[TimeSlot], comparison_slots: list[TimeSlot]) 
             
             # Find the latest start time and earliest end time
             start = max(slot1.bounds[0], slot2.bounds[0])
-            print("Start: ", start)
             end = min(slot1.bounds[1], slot2.bounds[1])
-            print("End: ", end)
             
             # If there's an overlap, create a new TimeSlot
             if start < end:

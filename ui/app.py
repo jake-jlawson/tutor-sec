@@ -1,17 +1,17 @@
 """
     UI ENTRY POINT
-    Run this to start the UI
+    Run this file to start the UI version of TutorSec
 """
-# IMPORTS
+# IMPORTS ---------------
 from flask import Flask, render_template, request, jsonify
-import webbrowser, threading, os, subprocess, signal
+import webbrowser, threading, os, signal
 
 # APP CONFIG
 APP = Flask(__name__)
 PORT = 5000
 
 
-# PRIMARY ROUTES
+# PRIMARY ROUTES ---------------
 # Main route
 @APP.route('/')
 def index():
@@ -36,7 +36,7 @@ def open_ui():
 
 
 
-# MAIN
+# MAIN ---------------
 if __name__ == '__main__':
     threading.Timer(1, open_ui).start()
     APP.run(debug=False, port=PORT)

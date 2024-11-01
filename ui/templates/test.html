@@ -1,0 +1,79 @@
+<!-- templates/index.html -->
+<!DOCTYPE html>
+<html lang="en">
+
+    <head>
+        <meta charset="UTF-8">
+        <title>TutorSec - Automated Tutoring Secretary</title>
+        <link rel="stylesheet" href="{{ url_for('static', filename='css/styles.css') }}">
+        <script>
+            // // send a request to the flask server to shut down when the page is closed
+            // window.onbeforeunload = function() {
+            //     navigator.sendBeacon('/shutdown');
+            // };
+        </script>
+    </head>
+
+    <body>
+        <div id="jobsContainer" class="container">
+        
+            <div class="card row m-3">
+                <div class="card-header d-flex justify-content-between align-items-center" style="color: #000;">
+                    <div class="d-flex align-items-center">
+                        Cambridge interview Prep Tuition ( Engineering )
+                        <div class="spacer" style="width: 10px;"></div>
+                        <span class="badge bg-TutorChaseChina">TutorChase China</span>
+                        <div class="spacer" style="width: 10px;"></div>
+                        <p class="lead m-0" style="font-size: 15px;"><b>£40/hour</b></p>
+                    </div>
+                    
+                    <div class="float-end">
+                        <a href="#" class="btn btn-primary btn-sm">Apply</a>
+                        <a href="#" class="btn btn-outline-danger btn-sm">Reject</a>
+                    </div>
+                </div>
+                <div class="card-body">
+                <em><p class="card-text" style="font-size: 12px;">
+                    Subject: Cambridge Interview Prep ( Engineering )
+                    <br> Total hours: 1 hour trial session, If the student is satisfied with the trial lesson, they will continue to book a further 9 hours of classes.
+                    <br> Student time Zone: US Pacific time
+                    <br> Student Availability: The student is available for classes on November 9th, 10th, and 11th, after 6 PM UK time. Please let us know your preferred class times. Thank you very much!
+                    <br> Feedback report: Required for each session
+                    <br> Course Outline: Required after the first session
+                    <br> Platform: Lessonspace
+                    </p></em>
+                </div>
+            </div>
+
+            <div class="card row m-3">
+                <div class="card-header d-flex justify-content-between align-items-center" style="color: #000;">
+                    <div class="d-flex align-items-center">
+                        Oxford interview Prep ( Computer Science )
+                        <div class="spacer" style="width: 10px;"></div>
+                        <span class="badge bg-OxbridgeApplications">Oxbridge Applications</span>
+                        <div class="spacer" style="width: 10px;"></div>
+                        <p class="lead m-0" style="font-size: 15px;"><b>£40/hour</b></p>
+                    </div>
+                    
+                    <div class="float-end">
+                        <a href="#" class="btn btn-primary btn-sm">Apply</a>
+                        <a href="#" class="btn btn-outline-danger btn-sm">Reject</a>
+                    </div>
+                </div>
+                <div class="card-body">
+                <em><p class="card-text" style="font-size: 12px;">
+                    Subject: Oxford Interview Prep tuition ( Computer Science )
+                    <br> Student apply for oxford Computer Science and IC Computing (Artificial Intelligence and Machine Learning) undergraduate program
+                    <br> Total hours: 5 hours, 1 hour for each session, weekly basis
+                    <br> Student time zone: China
+                    <br> Availability: The student would like to start the session as soon as possible. Please provide the tutor’s available times. Thank you very much!
+                    <br> Feedback report: Required for each session
+                    <br> Platform: Lessonspace
+                    </p></em>
+                </div>
+            </div>
+
+        </div>
+    </body>
+
+</html>

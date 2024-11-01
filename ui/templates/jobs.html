@@ -18,16 +18,24 @@
     </head>
 
     <body>
-        
         <!-- Jobs Container -->
-        <div id="jobsContainer" class="container"></div>
+        <div class="container mt-5">
+            <h1 class="display-4">Available Jobs</h1>
+            <div id="jobsContainer" class="container" style="height: 80%; overflow-y: scroll;">
+        </div>
+        
+            
+        </div>
         <script>
             // add event listener to the jobs container
-            document.addEventListener('DOMContentLoaded', function() {
+            document.addEventListener('DOMContentLoaded', async function() {
                 const jobsContainerID = "jobsContainer";
 
                 // fetch the jobs from the Flask server
-                const jobs = fetchJobs();
+                const jobs = await fetchJobs({
+                    'agencies': ['TutorChase China', 'Oxbridge Applications', 'TutorChase', 'UniAdmissions'],
+                    'filters': ['agency', 'subject', 'location']
+                });
 
                 // generate the jobs list
                 generateJobsList(jobsContainerID, jobs);

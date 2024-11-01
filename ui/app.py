@@ -4,22 +4,16 @@
 """
 # IMPORTS ---------------
 from flask import Flask, render_template, request, jsonify
-import webbrowser, threading, os, signal
+import webbrowser, threading, os, signal, sys
 
-# module imports
-from utilities.Navigator import Navigator
+# templates
+from routes import app_routes
 
 
 # APP CONFIG
 app = Flask(__name__)
 PORT = 5000
 
-
-# PRIMARY ROUTES ---------------
-# Instantiate global objects
-with app.app_context():
-    if not hasattr(app, 'navigator'):
-        app.navigator_instance = Navigator()  # Initialize your Navigator singleton here
 
 
 # Main route
@@ -34,6 +28,8 @@ def shutdown():
     os.kill(os.getpid(), signal.SIGINT)
     return '', 204  # No content response
 
+# Register the routes
+app.register_blueprint(app_routes, url_prefix='/app_routes')
 
 
 # Open the UI in a new tab
@@ -49,7 +45,7 @@ def open_ui():
 # MAIN ---------------
 if __name__ == '__main__':
     threading.Timer(1, open_ui).start()
-    app.run(debug=True, port=PORT)
+    app.run(debug=False, port=PORT)
 
     #close browser when the server shuts down
     os.system("taskkill /IM msedge.exe /F")

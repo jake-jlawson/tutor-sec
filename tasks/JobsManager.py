@@ -5,7 +5,8 @@
 # Description:     || Module for instantiating and managing jobs ||
 
 # IMPORTS
-import re
+import re, hashlib, json
+from datetime import datetime, timedelta, timezone
 from abc import ABC, abstractmethod
 from tasks.ScheduleManager import availability_from_text, get_overlaps, Calendar
 
@@ -15,12 +16,20 @@ from utilities.TextAnalyser import AvailabilityAnalyser
 #CLASS: Job
 #Description: Class used to store information about a job
 class Job:
-    def __init__(self, title: str, pay: str, job_text: str, tags: list[str], job_elements: dict[str, any]):
+    def __init__(self, company: str, title: str, pay: str, job_text: str, tags: list[str], job_elements: dict[str, any]):
+        self.company = company
         self.title = self.clean_input(title)
         self.pay = self.getPay(pay)
         self.job_text = self.clean_input(job_text)
         self.tags = tags
         self.elements = job_elements
+
+        self.id = self.generate_id(self.elements["job_link"])
+
+
+    @staticmethod
+    def generate_id(job_link: str):
+        return job_link.rstrip('/').split('/')[-1]
 
 
     #Description: Extracts the pay from the pay string
@@ -42,6 +51,18 @@ class Job:
     def clean_input(self, input: str):
         #remove outer whitespace and newlines
         return input.strip()
+
+
+    def serialize(self):
+        return {
+            "company": self.company,
+            "id": self.id,
+            "title": self.title,
+            "pay": self.pay,
+            "job_text": self.job_text,
+            "tags": self.tags,
+            "apply_link": self.elements["apply_link"]
+        }
 
 
 
@@ -173,4 +194,24 @@ class TypeFilter(JobFilter):
 
         
 
+#CLASS: JobLocalLoader
+#Loads jobs from the local jobs.json file
+class localJobLoader:
+    def load_jobs(self):
+        with open("db/jobs.json", "r") as file:
+            output = json.load(file)
 
+        # check the latest update time
+        last_updated = output["last_updated"]
+        last_updated = datetime.strptime(last_updated, "%Y-%m-%dT%H:%M:%SZ").replace(tzinfo=timezone.utc)  # Make it timezone-aware
+        time_difference = datetime.now(timezone.utc) - last_updated
+        print("Time difference: ", time_difference)
+
+        # return only if the jobs are up to date, if not return None
+        hours_threshold = 2
+
+        if time_difference <= timedelta(hours=hours_threshold):
+            return output["jobs"]
+        else:
+            return None
+        

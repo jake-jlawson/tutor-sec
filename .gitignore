@@ -10,6 +10,3 @@ ui/node_modules/
 
 # Ignore Sass cache if any
 /ui/.sass-cache
-
-#ignore static files
-ui/static/

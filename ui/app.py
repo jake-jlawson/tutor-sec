@@ -15,7 +15,7 @@ PORT = 5000
 # Main route
 @APP.route('/')
 def index():
-    return render_template('index.html')
+    return render_template('jobs.html')
 
 # Shutdown route
 @APP.route('/shutdown', methods=['POST'])
@@ -39,7 +39,7 @@ def open_ui():
 # MAIN ---------------
 if __name__ == '__main__':
     threading.Timer(1, open_ui).start()
-    APP.run(debug=False, port=PORT)
+    APP.run(debug=True, port=PORT)
 
     #close browser when the server shuts down
     os.system("taskkill /IM msedge.exe /F")

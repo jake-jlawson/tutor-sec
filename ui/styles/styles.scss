@@ -1,4 +1,13 @@
 // Import Bootstrap's main file from node_modules
 @import "../node_modules/bootstrap/scss/bootstrap";
 
-// Your custom overrides
+// TutoringCompany Tags
+.bg-TutorChaseChina {
+    background-color: #c7ad46;
+    font-weight: 400;
+}
+
+.bg-OxbridgeApplications {
+    background-color: #05305d;
+    font-weight: 400;
+}

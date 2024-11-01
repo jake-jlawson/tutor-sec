@@ -5,7 +5,7 @@
     <head>
         <meta charset="UTF-8">
         <title>TutorSec</title>
-        <link rel="stylesheet" href="styles/style.css">
+        <link rel="stylesheet" href="{{ url_for('static', filename='css/styles.css') }}">
         <script>
             // send a request to the flask server to shut down when the page is closed
             window.onbeforeunload = function() {

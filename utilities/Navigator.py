@@ -367,7 +367,7 @@ class Lanterna(SiteNavigator):
 #CONTEXT: Navigator
 #Description: Class for navigating a site
 class Navigator:
-    def __init__(self, tutoring_company: str) -> None:
+    def __init__(self, tutoring_company: str = "") -> None:
         
         # set the site navigator based on the input
         match tutoring_company:
@@ -382,8 +382,7 @@ class Navigator:
             case "Lanterna":
                 self._siteNavigator = Lanterna()
             case _:
-                raise ValueError(f"Invalid site navigator: {tutoring_company}")
-
+                self._siteNavigator = None
         # set the application provider
         self.applications = ApplicationProvider()
             

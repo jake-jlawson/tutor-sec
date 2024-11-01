@@ -6,19 +6,29 @@
 from flask import Flask, render_template, request, jsonify
 import webbrowser, threading, os, signal
 
+# module imports
+from utilities.Navigator import Navigator
+
+
 # APP CONFIG
-APP = Flask(__name__)
+app = Flask(__name__)
 PORT = 5000
 
 
 # PRIMARY ROUTES ---------------
+# Instantiate global objects
+with app.app_context():
+    if not hasattr(app, 'navigator'):
+        app.navigator_instance = Navigator()  # Initialize your Navigator singleton here
+
+
 # Main route
-@APP.route('/')
+@app.route('/')
 def index():
     return render_template('jobs.html')
 
 # Shutdown route
-@APP.route('/shutdown', methods=['POST'])
+@app.route('/shutdown', methods=['POST'])
 def shutdown():
     print("Shutting down the server...")
     os.kill(os.getpid(), signal.SIGINT)
@@ -39,7 +49,7 @@ def open_ui():
 # MAIN ---------------
 if __name__ == '__main__':
     threading.Timer(1, open_ui).start()
-    APP.run(debug=True, port=PORT)
+    app.run(debug=True, port=PORT)
 
     #close browser when the server shuts down
     os.system("taskkill /IM msedge.exe /F")

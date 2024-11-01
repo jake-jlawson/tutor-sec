@@ -6,10 +6,9 @@
 # Description:     || Module for handling the navigation of tutoring sites ||
 
 # IMPORTS
-import os
+import os, time
 from dotenv import load_dotenv
 from abc import ABC, abstractmethod
-from tasks.ClientApplications import ApplicationProvider
 
 # Selenium
 from selenium import webdriver
@@ -54,7 +53,9 @@ class Navigator:
             c_options = Options()
             c_service = Service(ChromeDriverManager().install())
             
-            if bool(os.getenv("USE_CHROME_PROFILE")): #use chrome profile
+            print("USE_CHROME_PROFILE: ", os.environ.get("CHROME_PROFILE").lower().strip())
+
+            if os.environ.get("USE_CHROME_PROFILE").lower().strip() == "true": #use chrome profile
                 print("Using Chrome profile")
                 c_options.add_argument(f"--user-data-dir={os.getenv('CHROME_PROFILE')}")
                 c_options.add_argument("--profile-directory=" + os.getenv("CHROME_PROFILE_DIRECTORY"))
@@ -79,24 +80,28 @@ class Navigator:
     def wait_on(self, condition: str): #wait on something to happen before proceeding
         wait_time = 10
 
-        if (condition == "page_load"):
-            return WebDriverWait(self.driver, wait_time).until(
-                lambda driver: driver.execute_script("return document.readyState") == "complete"
-            )
-        elif (condition[0] == "."): #class element
-            return WebDriverWait(self.driver, wait_time).until(
-                EC.presence_of_all_elements_located((By.CLASS_NAME, condition[1:]))
-            )
-        elif (condition[0] == "#"): #id element
-            return WebDriverWait(self.driver, wait_time).until(
-                EC.presence_of_element_located((By.ID, condition[1:]))
-            )
-        elif ("http" in condition or "https" in condition): #url
-            return WebDriverWait(self.driver, wait_time).until(
-                EC.url_contains(condition)
-            )
-        else: #no selector
-            raise ValueError(f"Invalid condition: {condition}")
+        try:
+            if (condition == "page_load"):
+                return WebDriverWait(self.driver, wait_time).until(
+                    lambda driver: driver.execute_script("return document.readyState") == "complete"
+                )
+            elif (condition[0] == "."): #class element
+                return WebDriverWait(self.driver, wait_time).until(
+                    EC.presence_of_all_elements_located((By.CLASS_NAME, condition[1:]))
+                )
+            elif (condition[0] == "#"): #id element
+                return WebDriverWait(self.driver, wait_time).until(
+                    EC.presence_of_element_located((By.ID, condition[1:]))
+                )
+            elif ("http" in condition or "https" in condition): #url
+                return WebDriverWait(self.driver, wait_time).until(
+                    EC.url_contains(condition)
+                )
+            else: #no selector
+                raise ValueError(f"Invalid condition: {condition}")
+            
+        except TimeoutException:
+            return None
 
 
 
@@ -106,10 +111,10 @@ class Navigator:
 
 
 #ABSTRACT CLASS: SiteNavigator --------------
-#Description: Abstract class for a site navigator type
+#Description: Abstract class for navigating a tutoring site
 class SiteNavigator(ABC):
-    def __init__(self):
-        pass
+    def __init__(self, navigator: Navigator):
+        self._navigator = navigator
 
     # PROPERTIES
     @property
@@ -128,13 +133,51 @@ class SiteNavigator(ABC):
         """URLs of the pages to navigate."""
 
 
-#CONCRETE NAVIGATOR IMPLEMENTATIONS --------------
+    # LOGIN METHODS
+    def is_logged_in(self) -> bool: #check if the user is logged in by querying a "logged in" element
+        
+        # Wait for page load
+        max_attempts = 5  # Define a maximum number of attempts
+        attempts = 0
+
+        while attempts < max_attempts:
+            result = self._navigator.wait_on("page_load")
+    
+            if result is not None:
+                break  # Exit the loop if the page is loaded
+    
+            print("Waiting for page to load...")
+            attempts += 1
+            time.sleep(1)
+
+
+        if result is None: #page did not load
+            raise Exception("Page did not load within the specified attempts. Check internet connection.")
+        
+        # try and find the logged in element
+        try:
+            self._navigator.driver.find_element(By.CSS_SELECTOR, self.page_elements["logged_in"])
+            return True
+        except NoSuchElementException:
+            return False
+
+
+
+    # NAVIGATION METHODS
+    def open(self):
+        self._navigator.open(self.url)
+
+
+
+#CONCRETE SITENAVIGATOR IMPLEMENTATIONS --------------
 
 # CLASS: TutorCruncher
 # Description: Navigator for TutorCruncher
 class TutorCruncher(SiteNavigator):
     # PROPERTIES
     url = "https://secure.tutorcruncher.com/"
+    cookie_file = "tutorcruncher_cookies.pk1"
+
     page_elements = {
         "logged_in": "#branch-menu",
         "username_field": "#id_username",
@@ -152,8 +195,8 @@ class TutorCruncher(SiteNavigator):
         "jobs_page": "https://secure.tutorcruncher.com/cal/con/service/"
     }
 
-    def __init__(self, company: str):
-        super().__init__()
+    def __init__(self, company: str, navigator: Navigator = Navigator()):
+        super().__init__(navigator)
         self.company = company
 
 
@@ -164,3 +207,10 @@ class Lanterna(SiteNavigator):
     def __init__(self):
         pass
 
+
+# TESTING
+if __name__ == "__main__":
+    print(os.getenv("USE_CHROME_PROFILE"))
+    tutor_cruncher = TutorCruncher("TutorChase")
+    tutor_cruncher.open()
+    print("logged in: ", tutor_cruncher.is_logged_in())

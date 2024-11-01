@@ -42,4 +42,4 @@ if __name__ == '__main__':
     APP.run(debug=False, port=PORT)
 
     #close browser when the server shuts down
-    webbrowser.get('edge').close()
+    os.system("taskkill /IM msedge.exe /F")

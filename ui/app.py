@@ -40,3 +40,6 @@ def open_ui():
 if __name__ == '__main__':
     threading.Timer(1, open_ui).start()
     APP.run(debug=False, port=PORT)
+
+    #close browser when the server shuts down
+    webbrowser.get('edge').close()

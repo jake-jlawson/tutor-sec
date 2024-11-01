@@ -34,6 +34,14 @@ class Job:
 
     #Description: Extracts the pay from the pay string
     def getPay(self, pay: str):
+        # set pay automatically for Oxbridge Applications and Lanterna
+        if self.company == "Oxbridge Applications":
+            return 40
+        
+        if self.company == "Lanterna":
+            return 24.65
+        
+
         # Remove currency symbols and commas
         cleaned_string = re.sub(r'[£$,]', '', pay)
     

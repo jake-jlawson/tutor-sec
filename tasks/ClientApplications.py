@@ -25,6 +25,8 @@ class ApplicationGenerator:
                 You will be provided with a job description and must use this and the information provided about the tutor's experience, qualifications, 
                 skills and tutoring style to generate a job application that is tailored to the job.
 
+                You should especially look to include things the tutor has in common with the student, and anything that makes them very qualified for the job.
+
                 The job text generated will be entered into a field in the application labelled "Any information relevant to your application to perform the Job".
 
                 It should be clear and concise, giving the client a good idea of the tutor's suitability for the job and persuading them to choose them as their tutor.
@@ -32,7 +34,7 @@ class ApplicationGenerator:
                 Base each application text generated on the template file provided. 
                 Change the contents to fit the job description, but match the style, structure and tone as closely as possible.
 
-                The template file contains markdown in "[]" (which should be removed in the generated text) which inform you of the structure of the application.
+                The template file contains markdown in "[]" (which should be removed in the generated text) which inform you of the ideal structure of the application.
             """,
             model="gpt-4o",
             tools=[],
@@ -44,6 +46,14 @@ class ApplicationGenerator:
     # METHOD: appendAvailability
     # Description: Formats the tutor's availability into a string and appends it to the end of the application text
     def appendAvailability(self, job_txt: str) -> str:
+        """
+            Should be in the format:
+
+            My availability lines up really well with the student. I am free for lessons:
+            - Mondays: 10-12pm, 2-4pm (China time)
+            - Wednesdays: 10-12pm, 2-4pm (China time)
+            - Sundays: 10-12pm, 2-4pm (China time)
+        """
         pass
 
 

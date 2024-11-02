@@ -74,7 +74,6 @@ class Job:
 
 
 
-
 #CLASS: JobFilter
 #Description: Abstract class for filtering jobs
 class JobFilter(ABC):
@@ -98,7 +97,6 @@ class JobFilter(ABC):
         return filtered_jobs
 
     
-
 #CLASS: AvailabilityFilter
 #Filter jobs by availability
 class AvailabilityFilter(JobFilter):
@@ -132,7 +130,6 @@ class AvailabilityFilter(JobFilter):
             return True
         else:
             return False
-
 
 
 #CLASS: SubjectFilter
@@ -176,7 +173,6 @@ class SubjectFilter(JobFilter):
         return False
 
         
-
 #CLASS: TypeFilter
 #Filter jobs by job type (ESAT, PAT, IB, GCSE, etc.)
 class TypeFilter(JobFilter):
@@ -200,12 +196,23 @@ class TypeFilter(JobFilter):
             
         return False
 
-        
+
+#CLASS: LengthFilter
+#Filter jobs by length (whether they are hourly, daily, part-time, full-time, etc.)
+class LengthFilter(JobFilter):
+    def apply_criteria(self, job: Job):
+        if job.pay > 1000: #these jobs are usually full-time commitments
+            return False
+        else:
+            return True
+
+
 #CLASS: JobSorter
 #Sorts jobs by a variety of attributes
 class JobSorter:
     def sort_jobs(self, jobs: list[Job]) -> list[Job]:
         return sorted(jobs, key=lambda x: x.pay, reverse=True)
+
 
 
 #CLASS: JobLocalLoader
@@ -222,7 +229,7 @@ class localJobLoader:
         print("Time difference: ", time_difference)
 
         # return only if the jobs are up to date, if not return None
-        hours_threshold = 2
+        hours_threshold = 24
 
         if time_difference <= timedelta(hours=hours_threshold):
             return output["jobs"]

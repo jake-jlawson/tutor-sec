@@ -58,7 +58,7 @@ function generateJobsList(jobListingContainerId, jobs) {
                 style="color: #000;"
             >
                 <div class="d-flex align-items-center">
-                    <p class="lead m-0" style="font-size: 13px;"><b>£${job.pay}/hour</b></p>
+                    <p class="lead m-0" style="font-size: 13px;"><b>${formatPay(job.pay)}</b></p>
                     <div class="spacer" style="width: 10px;"></div>
                     <p class="lead m-0" style="font-size: 15px;"><b>⦁</b></p>
                     <div class="spacer" style="width: 10px;"></div>
@@ -101,5 +101,21 @@ function formatJobText(jobText) {
         .replace(/\n/g, '<br>')
 
     return formattedText;
+}
+
+function formatPay(pay) {
+    
+    //hourly jobs
+    if (pay <= 50) {
+        return `£${pay}/hour`;
+    }
+
+    else if (pay <= 1000) {
+        return `£${pay}/day`;
+    }
+
+    else {
+        return `£${pay}`
+    }
 }
 

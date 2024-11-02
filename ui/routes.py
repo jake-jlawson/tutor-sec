@@ -58,6 +58,10 @@ def retrieve_jobs():
 
         jobs = [job.serialize() for job in jobs]
 
+        # save the jobs
+        local_loader.save_jobs(jobs)
+
+
     return jsonify(jobs)
 
 

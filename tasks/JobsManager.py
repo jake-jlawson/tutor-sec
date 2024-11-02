@@ -242,5 +242,5 @@ class localJobLoader:
 
         # save the jobs
         with open("db/jobs.json", "w") as file:
-            json.dump(output, file)
+            json.dump(output, file, indent=4)
         

@@ -42,8 +42,11 @@ def retrieve_jobs():
     agencies = params['agencies']
 
     # first try local loading of jobs
-    local_loader = localJobLoader()
-    jobs = local_loader.load_jobs()
+    try:
+        local_loader = localJobLoader()
+        jobs = local_loader.load_jobs()
+    except:
+        jobs = None
 
 
     # if local loading fails, load from the navigator

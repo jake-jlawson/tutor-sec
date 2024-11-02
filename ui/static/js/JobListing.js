@@ -40,6 +40,12 @@ async function fetchJobs(params) {
  * @param {array} jobs - The array of jobs to be displayed.
  */
 function generateJobsList(jobListingContainerId, jobs) {
+    // remove the loading text
+    const loadingText = document.getElementById('loadingText');
+    loadingText.remove();
+    
+
+    // collect jobs
     const jobsContainer = document.getElementById(jobListingContainerId); // get the container for the job listings
 
     jobs.forEach(job => {
@@ -91,28 +97,8 @@ function formatOrg(company) {
 }
 
 function formatJobText(jobText) {
-    const formattedText = jobText
-        .replace(/subject:/i, '<br>Subject:')
-        .replace(/student profile:/i, '<br>Student Profile:')
-        .replace(/feedback report:/i, '<br>Feedback report:')
-        .replace(/total hours:/i, '<br>Total hours:')
-        .replace(/student time zone:/i, '<br>Student time zone:')
-        .replace(/student available time:/i, '<br>Student available time:')
-        .replace(/availability:/i, '<br>Availability:')
-        .replace(/course content:/i, '<br>Course content:')
-        .replace(/platform:/i, '<br>Platform:')
-        .replace(/first time:/i, '<br>First time:')
-        .replace(/second time:/i, '<br>Second time:')
-        .replace(/third time:/i, '<br>Third time:')
-        .replace(/fourth time:/i, '<br>Fourth time:')
-        .replace(/fifth time:/i, '<br>Fifth time:')
-        .replace(/sixth time:/i, '<br>Sixth time:')
-        .replace(/seventh time:/i, '<br>Seventh time:')
-        .replace(/eighth time:/i, '<br>Eighth time:')
-        .replace(/location:/i, '<br>Location:')
-        .replace(/preferred time to take the sessions:/i, '<br>Preferred time to take the sessions:')
-        .replace(/student based in:/i, '<br>Student based in:')
-        .replace(".", '.<br>')
+    let formattedText = jobText
+        .replace(/\n/g, '<br>')
 
     return formattedText;
 }

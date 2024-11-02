@@ -192,6 +192,7 @@ class SiteNavigator(ABC):
         try: 
             print("Logging in...")
             result = self._navigator.wait_on(self.page_elements["username_field"], attempts=5)
+            time.sleep(1)
             
             # get login elements
             username_field = self._navigator.driver.find_element(By.CSS_SELECTOR, self.page_elements["username_field"])
@@ -340,8 +341,8 @@ class TutorCruncher(SiteNavigator):
 
         # try to find the detailed job text
         try:
-            self.driver.get(desc_url)
-            self.wait_on("page_load")
+            self._navigator.open(desc_url)
+            self._navigator.wait_on_load()
 
             # get the page source
             soup = BeautifulSoup(self.driver.page_source, 'html.parser')

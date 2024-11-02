@@ -84,7 +84,7 @@ class JobFilter(ABC):
         pass
 
     # Filter method
-    def run(self, jobs: list[Job]):
+    def run(self, jobs: list[Job]) -> list[Job]:
 
         filtered_jobs = []
         
@@ -201,6 +201,12 @@ class TypeFilter(JobFilter):
         return False
 
         
+#CLASS: JobSorter
+#Sorts jobs by a variety of attributes
+class JobSorter:
+    def sort_jobs(self, jobs: list[Job]) -> list[Job]:
+        return sorted(jobs, key=lambda x: x.pay, reverse=True)
+
 
 #CLASS: JobLocalLoader
 #Loads jobs from the local jobs.json file
@@ -222,4 +228,19 @@ class localJobLoader:
             return output["jobs"]
         else:
             return None
+        
+
+    def save_jobs(self, jobs: list[Job]):
+        # get the current time
+        current_time = datetime.now(timezone.utc).strftime("%Y-%m-%dT%H:%M:%SZ")
+
+        # create the output dictionary
+        output = {
+            "last_updated": current_time,
+            "jobs": jobs
+        }
+
+        # save the jobs
+        with open("db/jobs.json", "w") as file:
+            json.dump(output, file)
         

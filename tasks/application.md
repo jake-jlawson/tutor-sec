@@ -1,0 +1,9 @@
+I would be thrilled to support the student in preparing for their Cambridge Engineering interview. I recently graduated from the University of Oxford with a degree in Engineering, where I developed deep insights into Mathematics and its practical applications. Additionally, over the past three years, I have accumulated 400 hours of tutoring experience, assisting over 15 successful Oxbridge applicants.
+
+Having applied to both Cambridge and Oxford myself, and navigating the entire admission process, including interviews, I possess a unique perspective. This experience, coupled with my nearly 66% success rate of students receiving engineering offers from Oxbridge in the last application cycle, indicates my capability to guide students through this challenging endeavor[0] .
+
+In my tutoring sessions, I emphasize interaction and student-driven learning, embracing a style inspired by the Oxford tutorial system. I aim to cultivate independent thinking among students by engaging them in problem-solving exercises. My approach involves a personalized plan co-developed with the student, focusing on key areas to enhance interview performance[0] .
+
+Success in a Cambridge Engineering interview demands a robust understanding of fundamental Maths and Physics and the ability to apply that knowledge to unfamiliar contexts. Communication skills are equally critical. I am committed to equipping the student with these essential skills, along with providing extensive practice to ensure readiness[2].
+
+I am available after 6 PM UK time on the 9th, 10th, and 11th of November, aligning with the student's availability, making it convenient to tailor sessions according to their schedule. I look forward to helping the student achieve their academic aspirations.

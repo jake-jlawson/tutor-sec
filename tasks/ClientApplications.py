@@ -13,6 +13,9 @@ from tasks.JobsManager import *
 from utilities.Navigator2 import NavController
 
 
+
+
+
 #CLASS: ApplicationGenerator
 #Description: Class used to generate applications for jobs via LLMs
 class ApplicationGenerator:
@@ -21,26 +24,46 @@ class ApplicationGenerator:
         self.assistant = self.client.beta.assistants.create(
             name="Client Application Generator",
             instructions="""
-                You are a personal secretary for an online tutor. You are tasked with generating job application text for the tutor's applications to tutor new clients.
-                You will be provided with a job description and must use this and the information provided about the tutor's experience, qualifications, 
-                skills and tutoring style to generate a job application that is tailored to the job.
+                You are a recent graduate from the University of Oxford with a degree in Engineering working as a tutor. You are tasked with applying for new tutoring jobs, and
+                in order to do this, you must generate text for client applications that will be sent to the client and/or their parents to persuade them to choose you as their tutor. The job
+                text needs to outline your suitability for doing the job successfully.
 
-                You should especially look to include things the tutor has in common with the student, and anything that makes them very qualified for the job.
+                You will be provided with a job description and you must use this, as well as information provided about your experience, qualifications, skills and tutoring style,
+                to generate a job application that is tailored to the job.
 
-                The job text generated will be entered into a field in the application labelled "Any information relevant to your application to perform the Job".
+                You should be clear and very detailed, giving the client a good idea of your suitability for the job and making the case for them to choose you.
+                Be approachable but not cringe, and ensure you do not sound like ai.
 
-                It should be clear and concise, giving the client a good idea of the tutor's suitability for the job and persuading them to choose them as their tutor.
-
-                Base each application text generated on the template file provided. 
-                Change the contents to fit the job description, but match the style, structure and tone as closely as possible.
-
-                The template file contains markdown in "[]" (which should be removed in the generated text) which inform you of the ideal structure of the application.
+                To generate these applications, you must follow the template.md file exactly. "[]" in the templates inform you of the structure but don't use them in your final response.
+                Each paragraph should be the same length as in the examples provided in examples.md.
+                Closely match generated responses to the level of detail, style, structure and tone of the examples in the examples.md file.
             """,
             model="gpt-4o",
-            tools=[],
+            tools=[{"type": "file_search"}],
         )
 
-        self.threads = []
+        self.thread = self.client.beta.threads.create()
+
+
+        # handle files
+        vector_store = self.client.beta.vector_stores.create(name="Application Resources")
+
+        file_paths = ["./tasks/application_resources2/template.md", "./tasks/application_resources2/tutor_introduction.md", "./tasks/application_resources2/tutor_experience.md", "./tasks/application_resources2/tutor_style.md", "./tasks/application_resources2/tutor_subjects.md"]
+        file_streams = [open(path, "rb") for path in file_paths]
+
+        file_batch = self.client.beta.vector_stores.file_batches.upload_and_poll(
+            vector_store_id=vector_store.id,
+            files=file_streams
+        )
+
+        print(file_batch.status)
+        print(file_batch.file_counts)
+
+        #update assistant
+        self.assistant = self.client.beta.assistants.update(
+            assistant_id=self.assistant.id,
+            tool_resources={"file_search": {"vector_store_ids": [vector_store.id]}}
+        )
 
 
     # METHOD: appendAvailability
@@ -59,21 +82,42 @@ class ApplicationGenerator:
 
     # METHOD: generate
     # Description: Generates application text using the ai assitant for a particular job
-    def generate(self, job: Job): 
+    def generate(self, job_txt: str): 
         
-        #retrieve long job text
-        controller = NavController(job.company)
-        job = controller.navigator.get_detailed_job_text(job)
+        # #retrieve long job text
+        # controller = NavController(job.company)
+        # job = controller.navigator.get_detailed_job_text(job)
 
-        #generate application text
-        application_text = self.assistant.run(
-            job.job_text
+        thread = self.client.beta.threads.create(
+            messages=[
+                {
+                    "role": "user",
+                    "content": job_txt
+                }
+            ]
         )
+        
+        
+        
+        #generate application text
+        run = self.client.beta.threads.runs.create_and_poll(
+            thread_id=thread.id, assistant_id=self.assistant.id
+        )
+
+        messages = list(self.client.beta.threads.messages.list(thread_id=thread.id, run_id=run.id))
+
+        message_content = messages[0].content[0].text
+        annotations = message_content.annotations
+        citations = []
+        for index, annotation in enumerate(annotations):
+            message_content.value = message_content.value.replace(annotation.text, f"[{index}]")
+            if file_citation := getattr(annotation, "file_citation", None):
+                cited_file = self.client.files.retrieve(file_citation.file_id)
+                citations.append(f"[{index}] {cited_file.filename}")
+
+        print(message_content.value)
+        print("\n".join(citations))
             
-
-
-
-
 
 
 

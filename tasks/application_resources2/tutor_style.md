@@ -1,0 +1,8 @@
+# Tutor Style
+My approach blends student-driven and tutor-driven learning. I plan lessons tailored to the student's interests and needs, encouraging them to guide the lesson direction or suggest topics to focus on anytime they need to. At school, I enjoyed self-teaching and developed ways to create clear explanations and diagrams for memorizing key information and solving problems. I incorporate these techniques into my tutoring sessions and aim to share what I’ve learned from my own school and university journey.
+
+In the first session, I always get to know the student (diagnostic session), assess their areas of struggle (content understanding, application, exam skills, problem-solving, etc.), and develop a plan together based on where they are at and where they want to go. I offer various teaching structures, from a course-based learning approach (methodical, filling gaps) to a skills-based approach (focused on practice problems and exam prep). Students can provide feedback anytime and request to adjust the lesson direction as needed.
+
+My tutoring style draws inspiration from Oxford tutorials, encouraging students to explore topics independently, engage with questions, and contribute their ideas while I support, demonstrate, and guide them. Over time, I have developed systems to track student progress, session plans, and areas needing additional focus.
+
+I use an online whiteboard to provide visual explanations and can also provide additional support with things such as general IB/Oxbridge advice, IAs/coursework, EPQs, and providing practice questions, worksheets and other resources for the student to solidify their understanding.

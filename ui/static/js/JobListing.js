@@ -49,9 +49,12 @@ function generateJobsList(jobListingContainerId, jobs) {
     const jobsContainer = document.getElementById(jobListingContainerId); // get the container for the job listings
 
     jobs.forEach(job => {
+        console.log(job);
+        
         // Create a job card element
         const jobCard = document.createElement('div');
         jobCard.className = 'card row mb-3 mt-3 ml-0 mr-0';
+        jobCard.id = job.id;
 
         jobCard.innerHTML = `
             <div class="card-header d-flex justify-content-between align-items-center" 
@@ -68,9 +71,9 @@ function generateJobsList(jobListingContainerId, jobs) {
                     <div class="spacer" style="width: 10px;"></div>
                     
                 </div>
-                <div class="float-end">
-                    <a href="#" class="btn btn-primary btn-sm">Apply</a>
-                    <a href="#" class="btn btn-outline-danger btn-sm">Reject</a>
+                <div class="float-end job-actions">
+                    <a href="#" class="btn btn-primary btn-sm apply-button">Apply</a>
+                    <a href="#" class="btn btn-outline-danger btn-sm reject-button">Reject</a>
                 </div>
             </div>
 
@@ -85,7 +88,69 @@ function generateJobsList(jobListingContainerId, jobs) {
 
         // Append the job card to the container
         jobsContainer.appendChild(jobCard);
+
+        // Bind the job data to the job-actions div
+        const jobActionsDiv = jobCard.querySelector('.job-actions');
+        jobActionsDiv.dataset.job = job;
+
+        // add showApplyWindow to apply button
+        const jobActions = {
+            applyButton: jobCard.querySelector('.apply-button'),
+            rejectButton: jobCard.querySelector('.reject-button')
+        }
+        
+        jobActions.applyButton.onclick = () => handleApply(job); // show apply window
+        jobActions.rejectButton.onclick = () => handleReject(job); // show reject window
     })
+}
+
+
+/** COMPONENT: Application Handlers
+ * function opens the apply window for a job.
+ */
+function handleApply(job) {
+    console.log("Opening modal");
+    console.log("Handle apply has been called with job: ", job);
+
+
+    // get modal template
+    const modal = document.getElementById('applicationsModal');
+    const modal_content_root = modal.querySelector('.modal-content');
+
+    // Define the modal content
+    modal_content_root.innerHTML = `
+        <div class="modal-header">
+            <h5 class="modal-title">Apply for:<br>${job.title}</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+
+        <div class="modal-body">
+            <div class="mb-3">
+                <label for="exampleFormControlTextarea1" class="form-label">Application Statement:</label>
+                <textarea class="form-control" id="exampleFormControlTextarea1" rows="10"></textarea>
+            </div>
+        </div>
+
+        <div class="modal-footer">
+            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+            <button type="button" class="btn btn-primary">Apply</button>
+        </div>
+    `;
+
+    // handle apply actions
+
+    // initialize the modal
+    const applyModal = new bootstrap.Modal(modal);
+    applyModal.show();
+}
+
+
+function handleReject(job) {
+    console.log("Rejecting job");
+
+    //send rejection request to the server
+
+    //call update jobs without re-retrieval
 }
 
 

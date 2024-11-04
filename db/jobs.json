@@ -1,14 +1,50 @@
 {
-    "last_updated": "2024-11-02T12:11:10Z",
+    "last_updated": "2024-11-04T13:56:28Z",
     "jobs": [
         {
             "company": "TutorChase China",
-            "id": "1080948",
-            "title": "UCAS Personal Statement offline editing ( Math and Economics )",
+            "id": "1081697",
+            "title": "Oxford interview Prep ( Maths )",
             "pay": 40.0,
-            "job_text": "Subject: UCAS Personal Statement offline editing sessions ( Math and Economics )\nStudent Profile: The student intends to apply for the UCL, Math and Economics undergraduate program\nFeedback report: Required for each session\nTotal hours: 3 hours offline editing, 1 hour for each offline editing session\nStudent time zone: China time",
-            "tags": "\n\nRequired:\nOther \u2022 Economics \n\nRequired:\nOther \u2022 Mathematics \n",
-            "apply_link": "https://secure.tutorcruncher.com/cal/service/1080948/apply/"
+            "job_text": "Subject: Oxford Interview Prep ( Maths )\nTotal hours: 11 hours, 1 hour for each session\nStudent time zone: China\nStudent Availability: The student is available for classes from 11 AM to 2 PM UK time on weekdays. For the week of November 4-8, please schedule one 1-hour session. For the following weeks until the week of December 8, schedule 2 sessions per week, each lasting 1 hour. This totals 11 h\u2026",
+            "tags": "\n",
+            "apply_link": "https://secure.tutorcruncher.com/cal/service/1081697/apply/"
+        },
+        {
+            "company": "TutorChase China",
+            "id": "1081614",
+            "title": "UCAS Personal Statement offline editing( Management )",
+            "pay": 40.0,
+            "job_text": "Subject: UCAS Personal Statement Tutorial ( Management )\nStudent Profile: The student intends to apply for LSE, UCL, Manchester, Warwick mangment undergraduate program.\nFeedback report: Required for each session\nTotal hours: 2 hours offline editing, 1 hour for each offline editing session\nStudent time zone: China time",
+            "tags": "\n",
+            "apply_link": "https://secure.tutorcruncher.com/cal/service/1081614/apply/"
+        },
+        {
+            "company": "TutorChase China",
+            "id": "1081601",
+            "title": "Cambridge interview Prep ( Economics )",
+            "pay": 40.0,
+            "job_text": "\u2022 Subject: Cambridge Interview Prep\uff08 Economics )\n\u2022 Total hours: 1 hour paid trail session,Potential for 10 hours tuition based on successful first lesson\n\u2022 Availability: The student is available from 7 am to 2 pm UK time everyday, please provide tutor's preferred teaching times. \n\u2022 Feedback report: Required for each session\n\u2022 Course Outline: Required after the first session",
+            "tags": "\n\nRequired:\nOther \u2022 Economics \n",
+            "apply_link": "https://secure.tutorcruncher.com/cal/service/1081601/apply/"
+        },
+        {
+            "company": "TutorChase China",
+            "id": "1081599",
+            "title": "LNAT Tuition",
+            "pay": 40.0,
+            "job_text": "Subject: LNAT Tuition\nTotal hours: 1 hour trial session, If the student is satisfied with the trial lesson, he will continue to book 10 hours of classes.\nAvailability: The student is available for classes on Monday, Tuesday, and Wednesday from 10 AM to 12 PM UK time, and on Friday from 10 AM to 12 PM UK time. On weekends, he is available from 7 AM to 2 PM UK time. The student would like to schedu\u2026",
+            "tags": "\n\nRequired:\nOther \u2022 LNAT \n",
+            "apply_link": "https://secure.tutorcruncher.com/cal/service/1081599/apply/"
+        },
+        {
+            "company": "TutorChase China",
+            "id": "1081584",
+            "title": "GCSE English & Creative writing Tuition",
+            "pay": 35.0,
+            "job_text": "Subject: GCSE English & Creative writing Tuition\nStudent Profile: The student is studying in the UK and is currently in Year 9.\nTutor requirements: The student hopes the tutor has an Oxford background or is a highly experienced GCSE tutor.\nStudent time zone: UK time\nTotal hours: 1 hour trial session, If the student is satisfied with the trial lesson, she will continue to book 10-20 hours of class\u2026",
+            "tags": "\n\nRequired:\nOther \u2022 English \n",
+            "apply_link": "https://secure.tutorcruncher.com/cal/service/1081584/apply/"
         },
         {
             "company": "TutorChase China",
@@ -21,39 +57,12 @@
         },
         {
             "company": "TutorChase China",
-            "id": "1080935",
-            "title": "Cambridge interview Prep Tuition ( Natural Science )",
-            "pay": 40.0,
-            "job_text": "Subject: Cambridge Interview Prep ( Natural Science )\nTotal hours: 3 hours, 1 hour or 1.5 hours for each session\nStudent time zone: China\nStudent Availability: The student says he can take the class around 7-8 AM UK time next Monday. He hasn't provided any other available times yet. Please let me know what times the tutor is available.\nFeedback report: Required for each session",
-            "tags": "\n",
-            "apply_link": "https://secure.tutorcruncher.com/cal/service/1080935/apply/"
-        },
-        {
-            "company": "TutorChase China",
-            "id": "1080356",
-            "title": "Cambridge interview Prep Tuition ( Engineering )",
-            "pay": 40.0,
-            "job_text": "Subject: Cambridge Interview Prep ( Engineering )\nTotal hours: 1 hour trial session, If the student is satisfied with the trial lesson, they will continue to book a further 9 hours of classes.\nStudent time Zone: US Pacific time\nStudent Availability: The student is available for classes on November 9th, 10th, and 11th, after 6 PM UK time. Please let us know your preferred class times. Thank you ve\u2026",
-            "tags": "\n",
-            "apply_link": "https://secure.tutorcruncher.com/cal/service/1080356/apply/"
-        },
-        {
-            "company": "TutorChase China",
             "id": "1080272",
             "title": "Oxford interview Prep ( Computer Science )",
             "pay": 40.0,
             "job_text": "Subject: Oxford Interview Prep tuition ( Computer Science )\nStudent apply for oxford Computer Science and IC Computing (Artificial Intelligence and Machine Learning) undergraduate program\nTotal hours: 5 hours, 1 hour for each session, weekly basis\nStudent time zone: China\nAvailability: The student would like to start the session as soon as possible. Please provide the tutor\u2019s available times. Tha\u2026",
             "tags": "\n\nRequired:\nOther \u2022 Computer Science \n",
             "apply_link": "https://secure.tutorcruncher.com/cal/service/1080272/apply/"
-        },
-        {
-            "company": "TutorChase China",
-            "id": "1080263",
-            "title": "UCAS Personal Statement offline editing ( Math and Statistics )",
-            "pay": 40.0,
-            "job_text": "Subject: UCAS Personal Statement offline editing sessions ( Math and Statistics )\nStudent Profile: The student intends to apply for the UCL, Math and Statistics undergraduate program\nFeedback report: Required for each session\nTotal hours: 3 hours offline editing, 1 hour for each offline editing session\nStudent time zone: China time",
-            "tags": "\n\nRequired:\nOther \u2022 Mathematics \n\nRequired:\nOther \u2022 Mathematics and Statistics \n",
-            "apply_link": "https://secure.tutorcruncher.com/cal/service/1080263/apply/"
         },
         {
             "company": "TutorChase China",
@@ -93,24 +102,6 @@
         },
         {
             "company": "TutorChase China",
-            "id": "1079465",
-            "title": "ESAT Tuition ( Engineering )",
-            "pay": 40.0,
-            "job_text": "Subject: ESAT Tuition ( Engineering )\nTotal hours: 20 hours, 2 hours for each session\nSutdent profile\uff1aThe student plans to apply for IC Engineering related undergraduate program, The student plans to take the ESAT exam in January 2025, covering the Math 1, Math 2, and Physics modules.\nStudent time zone: China\nStudent Availability: The student would like to start the tuition as soon as possible",
-            "tags": "\n\nRequired:\nOther \u2022 NSAA \n\nRequired:\nOther \u2022 Physics \n\nRequired:\nOther \u2022 Engineering \n",
-            "apply_link": "https://secure.tutorcruncher.com/cal/service/1079465/apply/"
-        },
-        {
-            "company": "TutorChase China",
-            "id": "1077011",
-            "title": "IB DP 2 Physics SL Tuition",
-            "pay": 35.0,
-            "job_text": "The student is currently in IB DP2 and is looking for an Physics examiner to improve the overall score.\n\n\u2022 Frequency: 1-2 times per week\n\u2022 Platform: LessonSpace\n\u2022 Time Zone: China",
-            "tags": "\n\nRequired:\nOther \u2022 Physics \u2022 International Baccalaureate \n",
-            "apply_link": "https://secure.tutorcruncher.com/cal/service/1077011/apply/"
-        },
-        {
-            "company": "TutorChase China",
             "id": "1077001",
             "title": "IB DP 2 English B SL Tuition",
             "pay": 35.0,
@@ -120,48 +111,12 @@
         },
         {
             "company": "TutorChase China",
-            "id": "1076581",
-            "title": "UCAS Personal Statement Tutoring ( Physics )",
-            "pay": 40.0,
-            "job_text": "Subject: UCAS Personal Statement Tutorial ( Physics )\nStudent Profile: The student intends to apply for the Manchester physics undergraduate program\nFeedback report: Required for each session\nTotal hours: 5 hours ( 2hour online tutoring + 3 hour offline editing ), 1 hour for each session\nOnline tutoring content: The student expects the tutor to teach them how to write a high-quality Personal Stat\u2026",
-            "tags": "\n",
-            "apply_link": "https://secure.tutorcruncher.com/cal/service/1076581/apply/"
-        },
-        {
-            "company": "TutorChase China",
-            "id": "1075398",
-            "title": "Cambridge interview Prep Tuition ( Natural Science - physics )",
-            "pay": 40.0,
-            "job_text": "\u2022 Subject: Cambridge Interview Prep ( Natural Science - physics )\n\u2022 Student profile: apply for Cambridge Natural Science - physics\n\u2022 Total hours: 14 hours, 2 hours for each session\n\u2022 Student time zone: China\n\u2022 Availability: The student would like to start the session as soon as possible.  Please provide the tutor's available teaching hours. Thank you very much!",
-            "tags": "\n\nRequired:\nOther \u2022 Natural Sciences (Physical) \n\nRequired:\nOther \u2022 NSAA \n",
-            "apply_link": "https://secure.tutorcruncher.com/cal/service/1075398/apply/"
-        },
-        {
-            "company": "TutorChase China",
             "id": "1073614",
             "title": "Cambridge interviw Prep tuition ( Economics )",
             "pay": 40.0,
             "job_text": "\u2022 Subject: Cambridge Interview Prep\uff08 Economics )\n\u2022 Total hours: 1 hour paid trail session,Potential for 5-10 hours tuition based on successful first lesson\n\u2022 Availability: Student would like to start the session as soon as possible, she is available for classes in October every day between 11 AM and 3 PM UK time. Starting from November, she will be available every day between 10 AM and 2 PM UK ti\u2026",
             "tags": "\n\nRequired:\nOther \u2022 Philosophy, Politics and Economics (PPE) \n",
             "apply_link": "https://secure.tutorcruncher.com/cal/service/1073614/apply/"
-        },
-        {
-            "company": "TutorChase China",
-            "id": "1067410",
-            "title": "UCAS Personal Statement offline editing + mock interview ( Physics )",
-            "pay": 40.0,
-            "job_text": "Subject: UCAS Personal Statement offline editing + Interview Prep ( physics )\nStudent Profile: The student intends to apply for the IC & UCL physics undergradutae program\nStudent availability: The student wishes to start offline editing as soon as possible\nFeedback report: Required for each session\nCourse Information\uff1a",
-            "tags": "\n\nRequired:\nOther \u2022 Physics \n",
-            "apply_link": "https://secure.tutorcruncher.com/cal/service/1067410/apply/"
-        },
-        {
-            "company": "Oxbridge Applications",
-            "id": "1080354",
-            "title": "Interview preparation support - Engineering at Cambridge (3 hours online)",
-            "pay": 40,
-            "job_text": "This job was auto-created after the client submitted an enquiry. 3 hours total - **4x45 minutes**.\n\nPlease note that interview packages may be shared between **two or more tutors**, and individual interview sessions are **45 minutes** (30 mins interview, 15 mins discussion).\n\nThis job will be paid at tutor's default rate.",
-            "tags": "\n\nRequired:\nEngineering \u2022 Mechanical engineering \n\nRequired:\nEngineering \u2022 Engineering \n",
-            "apply_link": "https://secure.tutorcruncher.com/cal/service/1080354/apply/"
         },
         {
             "company": "Oxbridge Applications",
@@ -192,39 +147,84 @@
         },
         {
             "company": "UniAdmissions",
-            "id": "1080709",
-            "title": "1 hour Consultation With Dr Alix Hibble",
-            "pay": 45.0,
-            "job_text": "-",
-            "tags": "\n",
-            "apply_link": "https://secure.tutorcruncher.com/cal/service/1080709/apply/"
-        },
-        {
-            "company": "UniAdmissions",
-            "id": "1080708",
-            "title": "4 hours of 1:1 Tuition for Engineering Science applying to Oxford",
+            "id": "1081676",
+            "title": "17 hours of 1:1 Tuition for Modern Languages applying to Oxford",
             "pay": 25.0,
-            "job_text": "-",
-            "tags": "\n",
-            "apply_link": "https://secure.tutorcruncher.com/cal/service/1080708/apply/"
+            "job_text": "The student is looking for a Spanish tutorThe hours will be shred with two other tutors1x Tutor requiredEntry 2025",
+            "tags": "\n\nRequired:\nLanguages \u2022 Modern Languages - Spanish \n\nRequired:\nLanguages \u2022 Spanish \n",
+            "apply_link": "https://secure.tutorcruncher.com/cal/service/1081676/apply/"
         },
         {
             "company": "UniAdmissions",
-            "id": "1080647",
-            "title": "3 Mock Interviews for Natural Sciences Biological Applying to Cambridge",
-            "pay": 23.0,
-            "job_text": "Student based in Hong Kong (8 hrs ahead)Preferred time to take the sessions: Evenings and weekends",
-            "tags": "\n\nRequired:\nScience \u2022 Natural Sciences- Biological \n",
-            "apply_link": "https://secure.tutorcruncher.com/cal/service/1080647/apply/"
+            "id": "1081670",
+            "title": "PPE Interview prep online - 2 x tutors, 5 x hours each for 2 x students.",
+            "pay": 30.0,
+            "job_text": "2 x PPE applicants would like additional mock interviews online.5 x hours per tutor (x2 tutors), so a total of 10 x hours per student.Based in the UK.",
+            "tags": "\n\nRequired:\nPolitics \u2022 PPE \n",
+            "apply_link": "https://secure.tutorcruncher.com/cal/service/1081670/apply/"
         },
         {
             "company": "UniAdmissions",
-            "id": "1080644",
-            "title": "3x Mock Interviews for Engineering Applying to Imperial",
+            "id": "1081668",
+            "title": "3 online mock interviews for Computer Science applying to Oxbridge",
             "pay": 23.0,
-            "job_text": "-",
-            "tags": "\n\nRequired:\nEngineering \n",
-            "apply_link": "https://secure.tutorcruncher.com/cal/service/1080644/apply/"
+            "job_text": "Student based in the UK",
+            "tags": "\n\nRequired:\nEconomics \u2022 TMUA \n\nRequired:\nEngineering \u2022 Computer Science \n",
+            "apply_link": "https://secure.tutorcruncher.com/cal/service/1081668/apply/"
+        },
+        {
+            "company": "UniAdmissions",
+            "id": "1081589",
+            "title": "6med Medicine Mock Interviews - 4 Mocks",
+            "pay": 13.0,
+            "job_text": "Student is UK BasedLooking for two Kings College Tutors to perform 2x mock interviews eachHe wants a Kings specific interview.",
+            "tags": "\n\nRequired:\nScience \u2022 Medicine \n",
+            "apply_link": "https://secure.tutorcruncher.com/cal/service/1081589/apply/"
+        },
+        {
+            "company": "UniAdmissions",
+            "id": "1081573",
+            "title": "6 mock interviews for Biomedicine applying to Oxford",
+            "pay": 23.0,
+            "job_text": "Location: OnlineThe student is based in IndiaMON,WED,FRI : 5pm IST - 9pm ISTTUES, THRUS: 5pm IST - 6 pm ISTSAT, SUN: 8 am IST - 4 pm IST\"",
+            "tags": "\n\nRequired:\nScience \u2022 Biomedical Sciences \n\nRequired:\nScience \u2022 Medicine \n",
+            "apply_link": "https://secure.tutorcruncher.com/cal/service/1081573/apply/"
+        },
+        {
+            "company": "UniAdmissions",
+            "id": "1081572",
+            "title": "20 hours of 1:1 interview prep for biomedicine applying to Oxford",
+            "pay": 25.0,
+            "job_text": "Location: OnlineThe student is based in IndiaMON,WED,FRI : 5pm IST - 9pm ISTTUES, THRUS: 5pm IST - 6 pm ISTSAT, SUN: 8 am IST - 4 pm IST\"",
+            "tags": "\n\nRequired:\nScience \u2022 Medicine \n\nRequired:\nScience \u2022 Biomedical Sciences \n",
+            "apply_link": "https://secure.tutorcruncher.com/cal/service/1081572/apply/"
+        },
+        {
+            "company": "UniAdmissions",
+            "id": "1081571",
+            "title": "4 mock interviews for Biomedicine applying to Oxford",
+            "pay": 23.0,
+            "job_text": "Location: OnlineThe student is based in Peru (6 hours behind the UK)",
+            "tags": "\n\nRequired:\nScience \u2022 Medicine \n\nRequired:\nScience \u2022 Biomedical Sciences \n",
+            "apply_link": "https://secure.tutorcruncher.com/cal/service/1081571/apply/"
+        },
+        {
+            "company": "UniAdmissions",
+            "id": "1081570",
+            "title": "7 hours of 1:1 tuition for Biomedicine applying to Oxford",
+            "pay": 25.0,
+            "job_text": "Location: OnlineThe student is based in Peru (6 hours behind the UK)",
+            "tags": "\n\nRequired:\nScience \u2022 Biomedical Sciences \n\nRequired:\nScience \u2022 Medicine \n",
+            "apply_link": "https://secure.tutorcruncher.com/cal/service/1081570/apply/"
+        },
+        {
+            "company": "UniAdmissions",
+            "id": "1081531",
+            "title": "57 hours of 1:1 Tuition for Maths applying to Oxford",
+            "pay": 25.0,
+            "job_text": "27 entry still in year 1 of high school. But a very smart student with huge interest in Math and AI and computer science. Based in China, would like to have sessions on Sunday 7pm China time (11am in uk during winter time)",
+            "tags": "\n\nRequired:\nMaths \u2022 Further Maths \n\nRequired:\nMaths \n",
+            "apply_link": "https://secure.tutorcruncher.com/cal/service/1081531/apply/"
         },
         {
             "company": "UniAdmissions",
@@ -232,17 +232,8 @@
             "title": "13 hours of 1:1 Tuition for Natural Sciences Biological applying to Cambridge",
             "pay": 25.0,
             "job_text": "Student based in Hong Kong (8 hrs ahead)Preferred time to take the sessions: Evenings and weekends",
-            "tags": "\n\nRequired:\nScience \u2022 Natural Sciences- Biological \n",
+            "tags": "\n\nRequired:\nScience \u2022 Natural Sciences \n\nRequired:\nScience \u2022 Natural Sciences- Biological \n",
             "apply_link": "https://secure.tutorcruncher.com/cal/service/1080515/apply/"
-        },
-        {
-            "company": "UniAdmissions",
-            "id": "1080508",
-            "title": "5 hours of 1:1 Tuition for Economics applying to Cambridge",
-            "pay": 25.0,
-            "job_text": "Student based in UKLocation: OnlinePreferred time to take the sessions: Evenings/Weekends1x session per week",
-            "tags": "\n\nRequired:\nEconomics \u2022 Economics \n",
-            "apply_link": "https://secure.tutorcruncher.com/cal/service/1080508/apply/"
         },
         {
             "company": "UniAdmissions",
@@ -273,15 +264,6 @@
         },
         {
             "company": "UniAdmissions",
-            "id": "1080088",
-            "title": "2 mock interviews for Maths applying to Cambridge",
-            "pay": 23.0,
-            "job_text": "student based in The Netherlands",
-            "tags": "\n\nRequired:\nMaths \u2022 Mathematics \n",
-            "apply_link": "https://secure.tutorcruncher.com/cal/service/1080088/apply/"
-        },
-        {
-            "company": "UniAdmissions",
             "id": "1079957",
             "title": "20 hours of 1:1 Tuition for Biomedical sciences applying to Oxford",
             "pay": 25.0,
@@ -291,48 +273,12 @@
         },
         {
             "company": "UniAdmissions",
-            "id": "1079870",
-            "title": "Advisory Sessions for Student Applying To Oxbridge: Medicine",
-            "pay": 23.0,
-            "job_text": "1x Cambridge Tutor1x Oxford tutor",
-            "tags": "\n\nRequired:\nScience \u2022 Medicine \n",
-            "apply_link": "https://secure.tutorcruncher.com/cal/service/1079870/apply/"
-        },
-        {
-            "company": "UniAdmissions",
-            "id": "1079619",
-            "title": "Advisory Session for Biotechnology to Cambridge",
-            "pay": 25.0,
-            "job_text": "2026 EntryStudent based in UKLocattion: OnlineThe student is quite shy. We\u2019re looking for a tutor who can help the student feel comfortable and encourage them to open up.",
-            "tags": "\n\nRequired:\nScience \u2022 Natural Sciences- Biological \n\nRequired:\nScience \u2022 Biotechnology \n",
-            "apply_link": "https://secure.tutorcruncher.com/cal/service/1079619/apply/"
-        },
-        {
-            "company": "UniAdmissions",
             "id": "1079618",
             "title": "\ud83d\ude80 Join Our Team as a B2B Sales Consultant! \ud83d\ude80  Exciting full-time opportunity to be part of our Sales Team \u2013 all from th\u2026",
             "pay": 80000.0,
             "job_text": "Our RoleAs a B2B Sales Consultant, you'll report directly to the Commercial Director and focus on converting leads from business clients into long-term partnerships. You\u2019ll leverage your ability to build relationships with businesses, work in a fast-paced environment, and hit your sales targets consistently.  This is a fantastic opportunity to make a positive mark on a rapidly growing compan\u2026",
             "tags": "\n",
             "apply_link": "https://secure.tutorcruncher.com/cal/service/1079618/apply/"
-        },
-        {
-            "company": "UniAdmissions",
-            "id": "1079617",
-            "title": "Advisory Session for Chemical Engineering to Cambridge",
-            "pay": 25.0,
-            "job_text": "2026 EntryStudent based in UKLocattion: OnlineThe student is quite shy. We\u2019re looking for a tutor who can help the student feel comfortable and encourage them to open up.",
-            "tags": "\n\nRequired:\nEngineering \u2022 Chemical Engineering \n",
-            "apply_link": "https://secure.tutorcruncher.com/cal/service/1079617/apply/"
-        },
-        {
-            "company": "UniAdmissions",
-            "id": "1079611",
-            "title": "Advisory Session for Natural Science Biological to Cambridge",
-            "pay": 25.0,
-            "job_text": "2026 EntryStudent based in UKLocattion: OnlineThe student is quite shy. We\u2019re looking for a tutor who can help the student feel comfortable and encourage them to open up.",
-            "tags": "\n\nRequired:\nScience \u2022 Natural Sciences- Biological \n",
-            "apply_link": "https://secure.tutorcruncher.com/cal/service/1079611/apply/"
         },
         {
             "company": "UniAdmissions",
@@ -369,6 +315,15 @@
             "job_text": "Our RoleReporting to the Head of Admissions as our Senior Sales Consultant you be responsible for answering inbound phone enquiries and convert them into fee-paying clients. You are ambitious, and motivated graduate who is personable and determined to meet your own sales targets at all costs. You\u2019ll have a practical, hands-on and flexible approach, and you\u2019ll be a great team player and happy\u2026",
             "tags": "\n",
             "apply_link": "https://secure.tutorcruncher.com/cal/service/1077781/apply/"
+        },
+        {
+            "company": "UniAdmissions",
+            "id": "1053692",
+            "title": "4 x tutors for 1 x hour mock interview for CompSci Cam",
+            "pay": 25.0,
+            "job_text": "Online30 x mins interview; 30 x mins written and verbal feedback",
+            "tags": "\n\nRequired:\nEconomics \u2022 TMUA \n\nRequired:\nEngineering \u2022 Computer Science \n",
+            "apply_link": "https://secure.tutorcruncher.com/cal/service/1053692/apply/"
         }
     ]
 }

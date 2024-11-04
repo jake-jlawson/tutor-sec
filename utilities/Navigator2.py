@@ -319,7 +319,6 @@ class TutorCruncher(SiteNavigator):
             #create the job
             print("job elements: ", elements)
             new_job = Job(self.company, title.text, pay.text, job_text.text, tags.text, elements)
-            new_job = self.get_detailed_job_text(new_job)
             available_jobs.append(new_job)
 
         return available_jobs

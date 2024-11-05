@@ -49,7 +49,6 @@ function generateJobsList(jobListingContainerId, jobs) {
     const jobsContainer = document.getElementById(jobListingContainerId); // get the container for the job listings
 
     jobs.forEach(job => {
-        console.log(job);
         
         // Create a job card element
         const jobCard = document.createElement('div');
@@ -109,9 +108,6 @@ function generateJobsList(jobListingContainerId, jobs) {
  * function opens the apply window for a job.
  */
 function handleApply(job) {
-    console.log("Opening modal");
-    console.log("Handle apply has been called with job: ", job);
-
 
     // get modal template
     const modal = document.getElementById('applicationsModal');
@@ -127,7 +123,7 @@ function handleApply(job) {
         <div class="modal-body">
             <div class="mb-3">
                 <label for="exampleFormControlTextarea1" class="form-label">Application Statement:</label>
-                <textarea class="form-control" id="exampleFormControlTextarea1" rows="10"></textarea>
+                <textarea class="form-control" id="exampleFormControlTextarea1" rows="10" placeholder="Generating application statement..."></textarea>
             </div>
         </div>
 
@@ -142,15 +138,19 @@ function handleApply(job) {
     // initialize the modal
     const applyModal = new bootstrap.Modal(modal);
     applyModal.show();
-}
 
+
+    // send a request to generate an application statement for the job
+}
 
 function handleReject(job) {
     console.log("Rejecting job");
 
     //send rejection request to the server
 
-    //call update jobs without re-retrieval
+    //remove job from the list
+    const jobCard = document.getElementById(job.id);
+    jobCard.remove();
 }
 
 

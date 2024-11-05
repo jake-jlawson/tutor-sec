@@ -97,11 +97,22 @@ class ApplicationGenerator:
 
             Here is the format of the second paragraph:
             [A sentence to relate to the student, if applicable]
-            [A discussion (2-3 sentences) that outlines why the tutor is ideal for the job and what unique and relevant experiences they have that make them the ideal choice for the job]
+            [A discussion (2-3 sentences) that outlines why the tutor is ideal for the job and what unique and relevant experiences they have that make them the ideal choice for this specific job]
             [Include a powerful statistic or fact that reinforces the tutor's suitability for the job and past achievements]
 
            
             Follow these step by step instructions to complete the task:
+            1. From all documents uploaded and any previous information in the thread, try to write a genuine sentence to relate to the student. Do not try too hard to relate - if there is no relevant information to relate to the student skip this step.
+            1. Go through suitability_info.md and select all relevant experience, qualifications and suitability information that are relevant to the job description. Look for this within all sections/subjects/courses in the document.
+            3. Summarise the most relevant and powerful of this information in a short, friendly discussion (2-3 sentences) that makes the case for why the tutor is ideal to support the student with their subject.
+            4. Add a final sentence reinforcing the tutor's experience with a powerful statistic from suitability_info.md. Good statistics to use include number of students helped with this subject in the past, success rate of students, etc. If no good statistic that matches the job description can be found, skip this step.
+            5. Output the final result as the second paragraph of the application statement.
+
+
+
+
+
+
             1. Go through suitability_examples.md and identify the example which most closely matches the job description.
             2. Use this example as the basis for the output.
             3. From suitability_info.md, select all relevant experience, qualifications and suitability information that make the tutor stand out and are relevant to the job description.
